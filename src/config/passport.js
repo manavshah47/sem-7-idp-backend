@@ -81,7 +81,6 @@ module.exports = function (passport) {
         done(null, user)
     })
 
-    console.log("before deserialize")
     // called whenever new request occours for current session user
     passport.deserializeUser(async (user, done) => {
         // find current user from user database

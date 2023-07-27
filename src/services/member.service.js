@@ -23,7 +23,7 @@ const sendOtp = async (body) => {
         .create({
             body: `member verification code: ${otp}`,
             from: '+1 218 748 1407',
-            to: '+918200580922'
+            to: `+91${phone}`
         })
         .then(message => console.log(message.sid))
         .catch((error) => console.log(error))

@@ -42,9 +42,7 @@ const port = process.env.PORT || 3001;
 // cors to access apis from frontend
 app.use(
     cors({
-      origin:"*",
-      // origin:"http://localhost:3000",
-      // origin:"https://megh-technologies-due-deligence.netlify.app",
+      origin:"http://localhost:3000",
       methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
       credentials: true,
     })
