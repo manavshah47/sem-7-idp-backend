@@ -2,7 +2,7 @@ const { memberService } = require("../services")
 
 // login user controller
 const login = async (req, res) => {
-    const loginMessage = await memberService.login()
+    const loginMessage = await memberService.login(req.user)
     res.json(loginMessage)
 }
 

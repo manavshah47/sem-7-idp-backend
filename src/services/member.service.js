@@ -34,9 +34,9 @@ const sendOtp = async (body) => {
 }
 
 // login user service
-const login = async () => {
+const login = async (user) => {
     try{
-        return {success:true, message:"User logged In successfully"}
+        return {success:true, message:"User logged In successfully", data:user}
     } catch (error) {
         return {sucess:false,message:"Internal server error", data: error.message}
     }
@@ -68,12 +68,16 @@ const errorPage = async () => {
 
 const createMember = async (body) => {
     try {
+
         const memberData = {
-            ...body,
-            
+            ...body, // firstName, lastName, email, phone
         }
 
+        await Member.create(memberData)
+
+        await sendOtp({phone:body.phone})
         
+        return { success:true, message:"Member Created successfully" }
     } catch (error) {
         return {sucess:false,message:"Internal server error", data: error.message}
     }
