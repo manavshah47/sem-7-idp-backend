@@ -19,22 +19,19 @@ const sendOtp = async (body) => {
         memberData.otp = otp;
         await memberData.save();
 
-        client.messages
+        const response = await client.messages
         .create({
             body: `member verification code: ${otp}`,
             from: '+1 218 748 1407',
             to: `+91${phone}`
         })
-        .then(message => console.log(message.sid))
-        .catch((error) => console.log(error))
 
-        return { success:true, message:"Message sent successfully" }
+        return {success:true, message: "Message sent successfully"}
 
     } catch (error) {
         return {sucess:false,message:"Internal server error", data: error.message}
     }
 }
-
 
 // login user service
 const login = async () => {
@@ -61,7 +58,6 @@ const logout = async (session) => {
         session.destroy();
         return {success:true, message:"User successfully logged out"}
     } catch (error) {
-        
         return {sucess:false,message:"Internal server error", data: error.message}
     }
 }
@@ -70,10 +66,24 @@ const errorPage = async () => {
     return {success:false, message:"Incorrect id or password"}
 }
 
+const createMember = async (body) => {
+    try {
+        const memberData = {
+            ...body,
+            
+        }
+
+        
+    } catch (error) {
+        return {sucess:false,message:"Internal server error", data: error.message}
+    }
+}
+
 module.exports = {
     login,
     showUserInfo,
     logout,
     errorPage,
-    sendOtp
+    sendOtp,
+    createMember
 }

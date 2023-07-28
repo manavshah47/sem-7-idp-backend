@@ -24,4 +24,8 @@ router.post("/error", memberController.errorPage)
 // send otp api
 router.post("/send-otp", memberController.sendOtp)
 
+// create member post request
+router.post("/create-member", memberController.createMember)
+
+
 module.exports = router

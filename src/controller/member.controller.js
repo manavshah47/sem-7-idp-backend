@@ -30,10 +30,16 @@ const sendOtp = async (req, res) => {
     res.json(otpResponse)
 }
 
+const createMember = async (req, res) => {
+    const createdMemberResponse = await memberService.createMember(req.body)
+    res.json(createdMemberResponse)
+}
+
 module.exports = {
     login,
     showUserInfo,
     logout,
     errorPage,
-    sendOtp
+    sendOtp,
+    createMember
 }
