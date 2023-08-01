@@ -9,3 +9,6 @@ module.exports.Employee = require("./employee.model")
 // member model export
 module.exports.Member = require("./member.model")
 
+// membership model export
+module.exports.Membership = require("./membership.model")
+

@@ -11,6 +11,9 @@ const employeeRoute = require("./employee.route")
 // import member routes
 const memberRoute = require("./member.route")
 
+// import membership routes
+const membershipRoute = require("./membership.route")
+
 // use /admin for admin routes
 router.use("/admin", adminRoute)
 
@@ -19,5 +22,8 @@ router.use("/employee", employeeRoute)
 
 // use /member for user routes
 router.use("/member", memberRoute)
+
+// use /membership for user routes
+router.use("/membership", membershipRoute)
 
 module.exports = router

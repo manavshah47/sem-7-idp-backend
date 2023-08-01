@@ -1,4 +1,4 @@
-const { Member } = require("../models");
+const { Member } = require("../models/member.model");
 
 // send otp service
 const accountSid = process.env.TWILIO_ACCOUNT_SID;

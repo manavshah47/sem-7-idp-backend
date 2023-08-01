@@ -8,3 +8,6 @@ module.exports.memberController = require('./member.controller')
 
 // employee controller export
 module.exports.employeeController = require('./employee.controller')
+
+// membership controller export
+module.exports.membershipController = require("./membership.controller")

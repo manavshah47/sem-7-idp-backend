@@ -1,4 +1,4 @@
-const { Member } = require("../models");
+const { Member } = require("../models/member.model");
 
 // middleware to ensure user is logged In
 const ensureMember = async (req, res, next) => {

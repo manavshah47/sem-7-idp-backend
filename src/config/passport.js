@@ -2,7 +2,8 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 const LocalStrategy = require('passport-local').Strategy
 // Admin model import
-const { Admin, Member } = require('../models')
+const { Admin } = require('../models')
+const { Member } = require("../models/member.model")
 
 module.exports = function (passport) {
     // passport google strategy for admin users
@@ -42,7 +43,7 @@ module.exports = function (passport) {
                 // find user in database based on their id and password
                 let emailId = id.toLowerCase();
 
-                const userData = await Member.findOne({id: emailId, password}).select({password:0, __v:0, _id:0});
+                const userData = await Member.findOne({id: emailId, password}).select({password:0, __v:0, _id:0, otp:0});
 
                 // if user not exists then show error message
                 if(!userData){
