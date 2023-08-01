@@ -7,12 +7,12 @@ const companyBasicInfo = async (req, res) => {
 
 
 const companyInfoTwo = async (req, res) => {
-    const companyInfoResponse = await membershipService.companyInfoTwo(req.body, req.user)
+    const companyInfoResponse = await membershipService.companyInfoTwo(req.body, req.user, req.files)
     res.json(companyInfoResponse)
 }
 
 const companyInfoThree = async (req, res) => {
-    const companyInfoThreeResponse = await membershipService.companyInfoThree(req.body, req.user)
+    const companyInfoThreeResponse = await membershipService.companyInfoThree(req.body, req.user, req.files)
     res.json(companyInfoThreeResponse)
 }
 
@@ -21,9 +21,15 @@ const memberInfo = async (req, res) => {
     res.json(memberInfoResponse)
 }
 
+const getMemberships = async (req, res) => {
+    const membershipData = await membershipService.getMemberships()
+    res.json(membershipData)
+}
+
 module.exports = {
     companyBasicInfo,
     companyInfoTwo,
     companyInfoThree,
-    memberInfo
+    memberInfo,
+    getMemberships
 }

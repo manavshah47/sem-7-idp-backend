@@ -1,13 +1,14 @@
 const { Membership } = require("../models")
-
+const { uploadFile } = require("./image.service")
 
 const companyBasicInfo = async (body, user) => {
     try {
-        const previousmemberShipData = await Membership.findOne({'member.phone':user.phone})
-
-        if(previousmemberShipData){
-            return { success:false, message:"Membership for current user already exists"}
-        }
+        
+        // there can be updation in previous data
+        // const previousmemberShipData = await Membership.findOne({'member.phone':user.phone})
+        // if(previousmemberShipData){
+        //     return { success:false, message:"Membership for current user already exists"}
+        // }
 
         const initialMembershipData = {
             member:user,
@@ -24,20 +25,29 @@ const companyBasicInfo = async (body, user) => {
     }
 }
 
-const companyInfoTwo = async (body, user) => {
+const companyInfoTwo = async (body, user, file) => {
     try {
         const membershipData = await Membership.findOne({"member.phone":user.phone})
 
         if(!membershipData) {
             return { success: false, message:"No membership for given member", data: membershipData }
         }
+
+        const { companyType, companyRegistrationYear, panNumber, cinNumber, gstNumber, registrationProofName } = body;
         
-        if(membershipData.membershipFormStatus == "company-info-2") {
-            return { success: false, message:"Membership company info already added", data: membershipData }
-        }
+        // member can add updated data
+        // if(membershipData.membershipFormStatus == "company-info-2") {
+        //     return { success: false, message:"Membership company info already added", data: membershipData }
+        // }
+
+        const uploadedImageResponse = await uploadFile(file, registrationProofName)
 
         const updatedMembershipData = {
-            ...body,
+            companyType, companyRegistrationYear, panNumber, cinNumber, gstNumber,
+            companyRegistrationProofAttachment: {
+                file: uploadedImageResponse.imageURL,
+                documentName: registrationProofName
+            },
             membershipFormStatus:"company-info-2"
         }
 
@@ -50,7 +60,7 @@ const companyInfoTwo = async (body, user) => {
     }
 }
 
-const companyInfoThree = async (body, user) => {
+const companyInfoThree = async (body, user, file) => {
     try {
         const membershipData = await Membership.findOne({"member.phone":user.phone})
 
@@ -58,19 +68,26 @@ const companyInfoThree = async (body, user) => {
             return { success: false, message:"No membership for given member", data: membershipData }
         }
 
-        if(membershipData.membershipFormStatus == "company-info-3" ) {
-            return { success: false, message:"Membership company info already added", data: membershipData }
-        }
+        // member can add updated data
+        // if(membershipData.membershipFormStatus == "company-info-3" ) {
+        //     return { success: false, message:"Membership company info already added", data: membershipData }
+        // }
+
         if(membershipData.membershipFormStatus == "company-info-1" ) {
             return { success: false, message:"Please add company info 2 first", data: membershipData }
         }
 
+        const { companyResearchArea, companyERDAObjective, companyERDARequiredServices, typeOfMembership, companyTurnOverRange, companyTurnOver, companyProducts } = body
+
+        const uploadedImageResponse = await uploadFile(file, "turnover-balance-sheet")
+
         const updatedMembershipData = {
-            ...body,
+            companyResearchArea, companyERDAObjective, typeOfMembership, companyTurnOverRange, companyTurnOver, companyProducts, companyERDARequiredServices,
+            turnOverBalanceSheet: uploadedImageResponse.imageURL,
             membershipFormStatus:"company-info-3"
         }
 
-        const updatedData = await Membership.findOneAndUpdate({"member.phone":user.phone}, {...updatedMembershipData}, {returnOriginal:false})
+        await Membership.findOneAndUpdate({"member.phone":user.phone}, {...updatedMembershipData})
 
         return { success: true, message:"Company Info added successfully"}
 
@@ -87,12 +104,13 @@ const memberInfo = async (body, user) => {
             return { success: false, message:"No membership for given member", data: membershipData }
         }
         
+
         if(membershipData.membershipFormStatus == "company-info-1" ) {
             return { success: false, message:"Please add company info 2 first", data: membershipData }
         }
         
         if(membershipData.membershipFormStatus == "company-info-2" ) {
-            return { success: false, message:"Membership company info already added", data: membershipData }
+            return { success: false, message:"Please add company info 3 first", data: membershipData }
         }
         
         const updatedMembershipData = {
@@ -100,7 +118,7 @@ const memberInfo = async (body, user) => {
             membershipFormStatus:"member-info"
         }
 
-        const updatedData = await Membership.findOneAndUpdate({"member.phone":user.phone}, {...updatedMembershipData}, {returnOriginal:false})
+        await Membership.findOneAndUpdate({"member.phone":user.phone}, {...updatedMembershipData})
 
         return { success: true, message:"member Info added successfully"}
 
@@ -109,10 +127,19 @@ const memberInfo = async (body, user) => {
     }
 }
 
+const getMemberships = async () => {
+    try {
+        const membershipData = await Membership.find({})
+        return {success: true, message:"Membership data", data:membershipData}
+    } catch(error){
+        return { success:false, message:"Internal server error", data:error.message }
+    }
+}
 
 module.exports = {
     companyBasicInfo,
     companyInfoTwo,
     companyInfoThree,
-    memberInfo
+    memberInfo,
+    getMemberships
 }

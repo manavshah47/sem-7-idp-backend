@@ -18,4 +18,7 @@ router.put("/company-info-3", ensureMember, membershipController.companyInfoThre
 // 4. member info
 router.put("/member-info", ensureMember, membershipController.memberInfo)
 
+// 5. get memberships
+router.get("/get-memberships", membershipController.getMemberships)
+
 module.exports = router

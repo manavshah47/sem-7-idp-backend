@@ -54,16 +54,9 @@ const membershipSchema = new mongoose.Schema({
     },
 
     companyRegistrationProofAttachment: { // pdf attachment
-        file: {
-            type: String,
-            // required: true
-        },
-
-        documentName: {
-            type: String, // address, electricity bill 
-            // enum: ["electiry", "address"]
-            // required: true
-        }
+        type: String, // file name will look like (electricity/abc.pdf) || (address/abc.pdf)
+        // enum: ["electiry", "address"]
+        // required: true
     },
     
     panNumber: {
