@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 // member schema
 const memberSchema = new mongoose.Schema({
+    memberId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    
     firstName: {
         type: String,
         required: true
@@ -24,16 +30,10 @@ const memberSchema = new mongoose.Schema({
         unique: true
     },
 
-    otp: {
-        type: String
-    },
-
     typeOfUser: {
         type: String,
         default: "member"
     }
-
-
 });
 
 // create member model from user schema

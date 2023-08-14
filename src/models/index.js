@@ -12,3 +12,9 @@ module.exports.Member = require("./member.model")
 // membership model export
 module.exports.Membership = require("./membership.model")
 
+// counter model export
+module.exports.Counter = require("./counter.model")
+
+// otp model export
+module.exports.Otp = require("./otp.model")
+

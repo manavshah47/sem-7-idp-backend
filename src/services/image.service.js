@@ -15,7 +15,9 @@ const getObjectSignedUrl = async (attachmentURL) => {
     // set bucket name and image location
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Key: attachmentURL
+        Key: attachmentURL,
+        ResponseContentDisposition: 'inline',
+        ResponseContentType: "application/pdf"
     }
     
     // https://aws.amazon.com/blogs/developer/generate-presigned-url-modular-aws-sdk-javascript/
@@ -56,13 +58,15 @@ const uploadFile = async (file, folder) => {
     
     // attach folder name and file name (absolute url of the file)
     // all attachments will be stored inside respective folders folder in s3
-    let finalFileKey = folder + "/" + fileName;
+    let finalFileKey = folder + "/" + fileName + ".pdf";
 
     // upload params as per aws
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Body: fileContent,
-        Key: finalFileKey
+        Key: finalFileKey,
+        contentType:'application/json',
+        ContentDisposition: 'inline'
     }
 
     // actual upload of file in aws

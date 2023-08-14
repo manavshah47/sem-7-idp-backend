@@ -21,4 +21,7 @@ router.put("/member-info", ensureMember, membershipController.memberInfo)
 // 5. get memberships
 router.get("/get-memberships", membershipController.getMemberships)
 
+// 6. get membership
+router.get("/membership/:memberId", membershipController.getMemberShipData)
+
 module.exports = router

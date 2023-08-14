@@ -2,8 +2,10 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 const LocalStrategy = require('passport-local').Strategy
 // Admin model import
-const { Admin } = require('../models')
+const { Admin, Otp } = require('../models')
 const { Member } = require("../models/member.model")
+
+const { userValidation } = require("../validation")
 
 module.exports = function (passport) {
     // passport google strategy for admin users
@@ -18,6 +20,7 @@ module.exports = function (passport) {
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
+                console.log("Admin Authentication Called")
                 // find the admin in our database 
                 let user = await Admin.findOne({ adminId: profile.id })
 
@@ -63,10 +66,24 @@ module.exports = function (passport) {
             passwordField:'password'
         }, 
         async (id, password, done) => {
-            const userData = await Member.findOne({phone:id, otp: password})
+
+             // joi input validation
+            const { error } = userValidation.logInValidationSchema.validate({ id, password })
+
+            // return error if input validation fails
+            if(error) {
+                return done(null, false)
+            }
+
+            const userData = await Member.findOne({phone:id})
+            if(!userData){
+                return done(null, false)
+            }
+
+            const otpResponse = await Otp.findOne({phone:id, otp: password})
 
             // if user not exists then show error message
-            if(!userData){
+            if(!otpResponse){
                 return done(null, false)
             }
 

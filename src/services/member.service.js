@@ -1,13 +1,25 @@
+const { Otp } = require("../models");
 const { Member } = require("../models/member.model");
+const { membershipIdGenerator } = require("../util/IdGenerator");
 
 // send otp service
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 
+const { userValidation } = require("../validation")
+
 const sendOtp = async (body) => {
     try {
         const { phone } = body
+
+        // joi input validation
+        const { error } = userValidation.phoneNumberValidationSchema.validate({phone})
+
+        // return error if input validation fails
+        if(error) {
+            return {success:false, message:"Input validation failed", data:error.message}
+        }
 
         const memberData = await Member.findOne({ phone })
         if(!memberData || memberData === null || memberData === undefined){
@@ -16,8 +28,8 @@ const sendOtp = async (body) => {
         
         let otp = Math.floor(100000 + Math.random() * 900000);  //Generate 6 digit otp.
         otp = otp.toString();
-        memberData.otp = otp;
-        await memberData.save();
+        
+        await Otp.create({phone, otp})
 
         const response = await client.messages
         .create({
@@ -63,20 +75,36 @@ const logout = async (session) => {
 }
 
 const errorPage = async () => {
-    return {success:false, message:"Incorrect id or password"}
+    return {success:false, message:"Incorrect Otp, send otp again."}
 }
 
 const createMember = async (body) => {
     try {
+        // firstName, lastName, email, phone (from body)
+
+        // joi input validation
+        const { error } = userValidation.createUserValidationSchema.validate({ ...body })
+
+        // return error if input validation fails
+        if(error) {
+            return {success:false, message:"Input validation failed", data:error.message}
+        }
+
+        const memberId = await membershipIdGenerator()
 
         const memberData = {
-            ...body, // firstName, lastName, email, phone
+            ...body,
+            memberId
         }
 
         await Member.create(memberData)
 
-        await sendOtp({phone:body.phone})
+        const otpResponse = await sendOtp({phone:body.phone})
         
+        if(!otpResponse.success){
+            return { success:false, message:"Member created, but cannot send otp", data: otpResponse.data }
+        }
+
         return { success:true, message:"Member Created successfully" }
     } catch (error) {
         return {sucess:false,message:"Internal server error", data: error.message}

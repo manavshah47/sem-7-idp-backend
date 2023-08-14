@@ -26,10 +26,16 @@ const getMemberships = async (req, res) => {
     res.json(membershipData)
 }
 
+const getMemberShipData =  async (req, res) => {
+    const membershipData = await membershipService.getMemberShipData(req.params)
+    res.json(membershipData)
+}
+
 module.exports = {
     companyBasicInfo,
     companyInfoTwo,
     companyInfoThree,
     memberInfo,
-    getMemberships
+    getMemberships,
+    getMemberShipData
 }

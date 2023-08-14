@@ -50,13 +50,17 @@ const membershipSchema = new mongoose.Schema({
     },
 
     companyRegistrationYear: {
-        type: Number
+        type: Date
     },
 
     companyRegistrationProofAttachment: { // pdf attachment
-        type: String, // file name will look like (electricity/abc.pdf) || (address/abc.pdf)
-        // enum: ["electiry", "address"]
-        // required: true
+        file : {
+            type: String, // file name will look like (electricity/abc.pdf) || (address/abc.pdf)
+        },
+
+        documentName: {
+            type: String // enum: ["electiry", "address"]
+        }
     },
     
     panNumber: {

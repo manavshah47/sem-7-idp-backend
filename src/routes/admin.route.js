@@ -13,13 +13,13 @@ const { ensureGuest, logoutUser } = require("../middleware/auth.middleware")
 const passport = require("passport")
 
 // 1. admin login route
-router.get("/login", ensureGuest, passport.authenticate('google', { scope: ['profile','email'] }))
+router.get("/login", ensureGuest, passport.authenticate('admin', { scope: ['profile','email'] }))
 
 // 2. show admin info route (extra)
 router.get("/show-admin-info", ensureAdmin, adminController.showAdminInfo)
 
 // 3. oauth callback route
-router.get("/callback", passport.authenticate('google', { successRedirect:"https://megh-technologies-due-deligence.netlify.com",failureRedirect: 'https://megh-technologies-due-deligence.netlify.com/error' }), adminController.logIn)
+router.get("/callback", passport.authenticate('admin', { successRedirect:"http://localhost:3000/",failureRedirect: 'http://localhost:3001/admin/error' }), adminController.logIn)
 
 // 4. logout admin route
 router.get('/logout', logoutUser, adminController.LogOut)

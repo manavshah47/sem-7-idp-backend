@@ -10,7 +10,7 @@ const { ensureMember } = require("../middleware/user.middleware")
 const { memberController } = require("../controller");
 
 // 1. user login route
-router.post("/login", passport.authenticate('member', {failureRedirect: '/api/member/error' }), memberController.login)
+router.post("/login", passport.authenticate('member', {failureRedirect: 'http://localhost:3001/api/member/error' }), memberController.login)
 
 // 2. user info route (extra)
 router.get("/show-member-info", ensureMember, memberController.showUserInfo)
@@ -19,7 +19,7 @@ router.get("/show-member-info", ensureMember, memberController.showUserInfo)
 router.get("/logout", logoutUser, memberController.logout)
 
 // dummy route to showcase user not exists with given credentials
-router.post("/error", memberController.errorPage)
+router.get("/error", memberController.errorPage)
 
 // send otp api
 router.post("/send-otp", memberController.sendOtp)
