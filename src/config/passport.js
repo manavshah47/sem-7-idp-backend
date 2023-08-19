@@ -28,6 +28,16 @@ module.exports = function (passport) {
                     // If admin present in our database.
                     done(null, user)
                 } else {
+                    // const adminData = {
+                    //     adminId: profile.id,
+                    //     emailId: profile._json.email,
+                    //     name: profile.displayName,
+                    //     profileImage: profile._json.picture,
+                    //      typeOfUser: "admin"
+                    // }
+
+                    // let admin = await Admin.create(adminData)
+                    // console.log(admin)
                     done(null, false)
                 }
             } catch (err) {

@@ -11,3 +11,6 @@ module.exports.employeeController = require('./employee.controller')
 
 // membership controller export
 module.exports.membershipController = require("./membership.controller")
+
+// chat controller export
+module.exports.chatController = require("./chat.controller")

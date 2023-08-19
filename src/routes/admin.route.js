@@ -19,7 +19,7 @@ router.get("/login", ensureGuest, passport.authenticate('admin', { scope: ['prof
 router.get("/show-admin-info", ensureAdmin, adminController.showAdminInfo)
 
 // 3. oauth callback route
-router.get("/callback", passport.authenticate('admin', { successRedirect:"http://localhost:3000/",failureRedirect: 'http://localhost:3001/admin/error' }), adminController.logIn)
+router.get("/callback", passport.authenticate('admin', { successRedirect:"http://localhost:3000/",failureRedirect: 'http://localhost:3001/api/error' }), adminController.logIn)
 
 // 4. logout admin route
 router.get('/logout', logoutUser, adminController.LogOut)

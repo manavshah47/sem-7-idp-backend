@@ -11,3 +11,6 @@ module.exports.memberService = require("./member.service")
 
 //membership service export
 module.exports.membershipService = require("./membership.service")
+
+//chat service export
+module.exports.chatService = require("./chat.service")
