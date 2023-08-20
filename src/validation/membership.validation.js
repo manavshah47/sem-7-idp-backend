@@ -14,6 +14,8 @@ const membershipCompanyInfo1ValidationSchema = Joi.object({
     country: Joi.string().valid('india', 'usa', 'canada', 'france', 'germany').messages({'any.only':'Please select country from one of these'})
 })
 
+    
+
 
 module.exports = {
     membershipCompanyInfo1ValidationSchema,

@@ -11,11 +11,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "nodemon": "^3.0.1"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.342.0",
     "@aws-sdk/s3-request-presigner": "^3.342.0",
+    "axios": "^1.4.0",
     "bluebird": "^3.7.2",
     "connect-mongo": "^3.2.0",
     "cors": "^2.8.5",
