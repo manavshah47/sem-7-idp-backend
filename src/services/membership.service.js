@@ -1,15 +1,24 @@
-const { Membership } = require("../models")
+const { Membership } = require("../models");
+const { membershipValidation } = require("../validation");
 const { uploadFile, getObjectSignedUrl } = require("./image.service")
 
 const companyBasicInfo = async (body, user) => {
     try {
         
+        const { companyPhone, companyEmail, companyTelephone, companyName, ownerName, companyAddress } = body;
+
+        // joi input validaton
+        const { error } = membershipValidation.membershipCompanyInfo1ValidationSchema.validate({ companyPhone, companyEmail, companyTelephone, companyName, ownerName, companyAddress})
+
+        // validation error condition
+        if(error){
+            return {success:false, message:"Input validation failed", data: error.message}
+        }
+
         // there can be updation in previous data
         const previousmemberShipData = await Membership.findOne({'member.phone':user.phone})
         // if membership with given mobile number already exists, then update data into it.
         if(previousmemberShipData){
-            const { companyPhone, companyEmail, companyTelephone, companyName, ownerName, companyAddress } = body;
-
             previousmemberShipData.companyPhone = companyPhone
             previousmemberShipData.companyEmail = companyEmail
             previousmemberShipData.companyTelephone = companyTelephone
