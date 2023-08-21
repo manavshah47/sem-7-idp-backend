@@ -1,10 +1,16 @@
+// import of models (database schema)
 const { Membership } = require("../models");
+
+// validation schema import
 const { membershipValidation } = require("../validation");
+
+// image related services import
 const { uploadFile, getObjectSignedUrl } = require("./image.service")
 
+// POST API - company-info-1
 const companyBasicInfo = async (body, user) => {
     try {
-        
+        // retrive data from body of the request
         const { companyPhone, companyEmail, companyTelephone, companyName, ownerName, companyAddress } = body;
 
         // joi input validaton
@@ -18,16 +24,18 @@ const companyBasicInfo = async (body, user) => {
         // there can be updation in previous data
         const previousmemberShipData = await Membership.findOne({'member.phone':user.phone})
 
-        // when membership is in pending or approved status, data cannot be updated or added
-        if(previousmemberShipData.membershipStatus == "pending"){
-            return { success: false, message:"Application is in approval stage, cannot modify data"}
-        }
-        else if(previousmemberShipData.membershipStatus == "approved"){
-            return { success: false, message:"Application is already approved, can not modify data now."}
-        }
-
         // if membership with given mobile number already exists, then update data into it.
         if(previousmemberShipData){
+
+            // when membership is in pending or approved status, data cannot be updated or added
+            if(previousmemberShipData.membershipStatus == "pending"){
+                return { success: false, message:"Application is in approval stage, cannot modify data"}
+            }
+            else if(previousmemberShipData.membershipStatus == "approved"){
+                return { success: false, message:"Application is already approved, can not modify data now."}
+            }
+
+            // updation in previous data
             previousmemberShipData.companyPhone = companyPhone
             previousmemberShipData.companyEmail = companyEmail
             previousmemberShipData.companyTelephone = companyTelephone
@@ -35,22 +43,26 @@ const companyBasicInfo = async (body, user) => {
             previousmemberShipData.ownerName = ownerName
             previousmemberShipData.companyAddress = companyAddress
 
+            // save updated data in database
             previousmemberShipData.save()
 
+            // return sucess response
             return { success:true, message:"Membership data updated successfully"}
         }
 
-        // new member creation procedure
+        // new member creation condition
+        // create membership object as per schema requirment
         const initialMembershipData = {
             member:user,
             ...body,
             membershipFormStatus:"company-info-1"
         }
 
+        // create membership in database
         await Membership.create(initialMembershipData)
 
+        // return success response
         return { success: true, message:"Data Added succesfully"}
-
     } catch (error){
         return { success:false, message:"Internal server error", data:error.message }
     }
@@ -58,6 +70,7 @@ const companyBasicInfo = async (body, user) => {
 
 const companyInfoTwo = async (body, user, file) => {
     try {
+        // retrive data from body
         const { companyType, registrationYear, panNumber, cinNumber, gstNumber, registrationProofName } = body;
 
         // joi input validation
@@ -68,8 +81,10 @@ const companyInfoTwo = async (body, user, file) => {
             return {success:false, message:"Input validation failed", data: error.message}
         }
 
+        // fetch previously added membership info
         const membershipData = await Membership.findOne({"member.phone":user.phone})
 
+        // if no previous membership then return response
         if(!membershipData) {
             return { success: false, message:"No membership for given member", data: membershipData }
         }
@@ -82,8 +97,10 @@ const companyInfoTwo = async (body, user, file) => {
             return { success: false, message:"Application is already approved, can not modify data now."}
         }
         
-        // member can add updated data
+        // membership data updation condition
         if(membershipData.membershipFormStatus == "company-info-2" || membershipData.membershipFormStatus == "company-info-3" || membershipData.membershipFormStatus == "member-info") {
+            
+            // change membership data accodingly 
             membershipData.companyType = companyType
             membershipData.companyRegistrationYear = registrationYear
             membershipData.panNumber = panNumber
@@ -153,14 +170,14 @@ const companyInfoThree = async (body, user, file) => {
             membershipData.companyTurnOverRange = companyTurnOverRange
             membershipData.companyProducts = JSON.parse(companyProducts)
             membershipData.membershipStatus = "pending"
-
+            
             membershipData.save()
             return { success: true, message:"Membership data updates successfully"}
         }
-
+        
         // initial data addition conditon
         const uploadedImageResponse = await uploadFile(file, "turnover-balance-sheet")
-
+        
         const updatedMembershipData = {
             // companyResearchArea, 
             companyERDAObjective, 
@@ -169,7 +186,8 @@ const companyInfoThree = async (body, user, file) => {
             companyProducts: JSON.parse(companyProducts), 
             companyERDARequiredServices: JSON.parse(companyERDARequiredServices),
             turnOverBalanceSheet: uploadedImageResponse.imageURL,
-            membershipFormStatus:"company-info-3"
+            membershipFormStatus:"company-info-3",
+            membershipStatus : "pending"
         }
 
         await Membership.findOneAndUpdate({"member.phone":user.phone}, {...updatedMembershipData})
