@@ -163,8 +163,8 @@ const membershipSchema = new mongoose.Schema({
 
     membershipStatus: {
         type: String,
-        enum: ["pending", "reverted", "approved"],
-        default: "pending"
+        enum: ["draft","pending", "reverted", "approved"],
+        default: "draft"
     },
 
     paymentStatus: {

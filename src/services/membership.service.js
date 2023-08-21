@@ -17,6 +17,15 @@ const companyBasicInfo = async (body, user) => {
 
         // there can be updation in previous data
         const previousmemberShipData = await Membership.findOne({'member.phone':user.phone})
+
+        // when membership is in pending or approved status, data cannot be updated or added
+        if(previousmemberShipData.membershipStatus == "pending"){
+            return { success: false, message:"Application is in approval stage, cannot modify data"}
+        }
+        else if(previousmemberShipData.membershipStatus == "approved"){
+            return { success: false, message:"Application is already approved, can not modify data now."}
+        }
+
         // if membership with given mobile number already exists, then update data into it.
         if(previousmemberShipData){
             previousmemberShipData.companyPhone = companyPhone
@@ -51,10 +60,10 @@ const companyInfoTwo = async (body, user, file) => {
     try {
         const { companyType, registrationYear, panNumber, cinNumber, gstNumber, registrationProofName } = body;
 
-
-        // joi validation
+        // joi input validation
         const { error } = membershipValidation.membershipCompanyInfo2ValidationSchema.validate({ companyType, registrationYear, panNumber, cinNumber, gstNumber, registrationProofName })
 
+        // if error in input, then return response
         if(error){
             return {success:false, message:"Input validation failed", data: error.message}
         }
@@ -63,6 +72,14 @@ const companyInfoTwo = async (body, user, file) => {
 
         if(!membershipData) {
             return { success: false, message:"No membership for given member", data: membershipData }
+        }
+
+        // when membership is in pending or approved status, data cannot be updated or added
+        if(membershipData.membershipStatus == "pending"){
+            return { success: false, message:"Application is in approval stage, cannot modify data"}
+        }
+        else if(membershipData.membershipStatus == "approved"){
+            return { success: false, message:"Application is already approved, can not modify data now."}
         }
         
         // member can add updated data
@@ -104,10 +121,9 @@ const companyInfoTwo = async (body, user, file) => {
 
 const companyInfoThree = async (body, user, file) => {
     try {
-
         const { companyERDAObjective, companyERDARequiredServices, typeOfMembership, companyTurnOverRange, companyProducts } = body
 
-        // joi validation
+        // joi input validation
         const { error } = membershipValidation.membershipCompanyInfo3ValidationSchema.validate({ companyERDAObjective, companyERDARequiredServices, typeOfMembership, companyTurnOverRange, companyProducts})
         if(error){
             return {success:false, message:"Input validation failed", data: error.message}
@@ -115,8 +131,17 @@ const companyInfoThree = async (body, user, file) => {
 
         const membershipData = await Membership.findOne({"member.phone":user.phone})
 
+        // if no membership with given phone number then return response
         if(!membershipData) {
             return { success: false, message:"No membership for given member", data: membershipData }
+        }
+
+        // when membership is in pending or approved status, data cannot be updated or added
+        if(membershipData.membershipStatus == "pending"){
+            return { success: false, message:"Application is in approval stage, cannot modify data"}
+        }
+        else if(membershipData.membershipStatus == "approved"){
+            return { success: false, message:"Application is already approved, can not modify data now."}
         }
 
         // data updation condition
@@ -127,6 +152,7 @@ const companyInfoThree = async (body, user, file) => {
             membershipData.typeOfMembership = typeOfMembership
             membershipData.companyTurnOverRange = companyTurnOverRange
             membershipData.companyProducts = JSON.parse(companyProducts)
+            membershipData.membershipStatus = "pending"
 
             membershipData.save()
             return { success: true, message:"Membership data updates successfully"}

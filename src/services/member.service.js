@@ -29,6 +29,10 @@ const sendOtp = async (body) => {
         let otp = Math.floor(100000 + Math.random() * 900000);  //Generate 6 digit otp.
         otp = otp.toString();
         
+        // delete otp if already present
+        await Otp.findOneAndDelete({phone})
+
+        // store new otp in database
         await Otp.create({phone, otp})
 
         const response = await client.messages
