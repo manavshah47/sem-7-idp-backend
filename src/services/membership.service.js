@@ -49,24 +49,24 @@ const companyBasicInfo = async (body, user) => {
 
 const companyInfoTwo = async (body, user, file) => {
     try {
-        const { companyType, companyRegistrationYear, panNumber, cinNumber, gstNumber, companyAddress } = body;
+        const { companyType, registrationYear, panNumber, cinNumber, gstNumber, registrationProofName } = body;
 
 
         // joi validation
-        const { error } = membershipValidation.membershipCompanyInfo2ValidationSchema.validate({ companyType, companyRegistrationYear, panNumber, cinNumber, gstNumber, companyAddress})
-
-        const membershipData = await Membership.findOne({"member.phone":user.phone})
+        const { error } = membershipValidation.membershipCompanyInfo2ValidationSchema.validate({ companyType, registrationYear, panNumber, cinNumber, gstNumber, registrationProofName })
 
         if(error){
             return {success:false, message:"Input validation failed", data: error.message}
         }
+
+        const membershipData = await Membership.findOne({"member.phone":user.phone})
 
         if(!membershipData) {
             return { success: false, message:"No membership for given member", data: membershipData }
         }
         
         // member can add updated data
-        if(membershipData.membershipFormStatus == "company-info-2") {
+        if(membershipData.membershipFormStatus == "company-info-2" || membershipData.membershipFormStatus == "company-info-3" || membershipData.membershipFormStatus == "member-info") {
             membershipData.companyType = companyType
             membershipData.companyRegistrationYear = registrationYear
             membershipData.panNumber = panNumber
@@ -104,11 +104,6 @@ const companyInfoTwo = async (body, user, file) => {
 
 const companyInfoThree = async (body, user, file) => {
     try {
-        const membershipData = await Membership.findOne({"member.phone":user.phone})
-
-        if(!membershipData) {
-            return { success: false, message:"No membership for given member", data: membershipData }
-        }
 
         const { companyERDAObjective, companyERDARequiredServices, typeOfMembership, companyTurnOverRange, companyProducts } = body
 
@@ -116,6 +111,12 @@ const companyInfoThree = async (body, user, file) => {
         const { error } = membershipValidation.membershipCompanyInfo3ValidationSchema.validate({ companyERDAObjective, companyERDARequiredServices, typeOfMembership, companyTurnOverRange, companyProducts})
         if(error){
             return {success:false, message:"Input validation failed", data: error.message}
+        }
+
+        const membershipData = await Membership.findOne({"member.phone":user.phone})
+
+        if(!membershipData) {
+            return { success: false, message:"No membership for given member", data: membershipData }
         }
 
         // data updation condition

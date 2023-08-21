@@ -17,7 +17,7 @@ const membershipCompanyInfo1ValidationSchema = Joi.object({
 // companyType, registrationYear, panNumber, cinNumber, gstNumber, registrationProofName
 const membershipCompanyInfo2ValidationSchema = Joi.object({
     companyType: Joi.string().min(3).max(200).required().messages({'string.empty':'phone number no cannot be empty', 'string.min':'EQTR No cannot be less than 3 characters','string.max':'EQTR No cannot be more than 255 characters'}),
-    registrationYear: Joi.string().regex(/^[0-9]{4}$/).required().messages({'string.empty': 'Registration Year is required','string.pattern.base': 'Registration Year must be a valid year in YYYY format'}),  
+    registrationYear: Joi.date().messages({'date.empty': 'Registration Year is required'}),  
     panNumber: Joi.string().min(10).max(10).required().messages({
         'string.empty': 'PAN Number cannot be empty',
         'string.min': 'PAN Number must be of 10 digit',
