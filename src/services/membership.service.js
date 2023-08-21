@@ -18,16 +18,18 @@ const companyBasicInfo = async (body, user) => {
         // there can be updation in previous data
         const previousmemberShipData = await Membership.findOne({'member.phone':user.phone})
 
-        // when membership is in pending or approved status, data cannot be updated or added
-        if(previousmemberShipData.membershipStatus == "pending"){
-            return { success: false, message:"Application is in approval stage, cannot modify data"}
-        }
-        else if(previousmemberShipData.membershipStatus == "approved"){
-            return { success: false, message:"Application is already approved, can not modify data now."}
-        }
-
+       
         // if membership with given mobile number already exists, then update data into it.
         if(previousmemberShipData){
+             // when membership is in pending or approved status, data cannot be updated or added
+            if(previousmemberShipData.membershipStatus == "pending"){
+                return { success: false, message:"Application is in approval stage, cannot modify data"}
+            }
+            else if(previousmemberShipData.membershipStatus == "approved"){
+                return { success: false, message:"Application is already approved, can not modify data now."}
+            }
+
+
             previousmemberShipData.companyPhone = companyPhone
             previousmemberShipData.companyEmail = companyEmail
             previousmemberShipData.companyTelephone = companyTelephone
