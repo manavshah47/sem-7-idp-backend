@@ -27,5 +27,11 @@ router.post("/send-otp", memberController.sendOtp)
 // create member post request
 router.post("/create-member", memberController.createMember)
 
+//create phone check
+router.get("/check-phone/:phone",memberController.checkPhoneExist)
+
+//create email check
+router.get("/check-email/:email",memberController.checkEmailExist)
+
 
 module.exports = router

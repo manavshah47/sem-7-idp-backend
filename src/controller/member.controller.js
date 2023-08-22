@@ -1,3 +1,4 @@
+const { rawListeners } = require("../models/admin.model")
 const { memberService } = require("../services")
 
 // login user controller
@@ -36,11 +37,23 @@ const createMember = async (req, res) => {
     res.json(createdMemberResponse)
 }
 
+const checkPhoneExist = async(req,res) => {
+    const checkphone = await memberService.checkPhoneExist(req.params)
+    res.json(checkphone)
+}
+
+const checkEmailExist = async(req,res) => {
+    const checkemail = await memberService.checkEmailExist(req.params)
+    res.json(checkemail)
+}
+
 module.exports = {
     login,
     showUserInfo,
     logout,
     errorPage,
     sendOtp,
-    createMember
+    createMember,
+    checkPhoneExist,
+    checkEmailExist
 }
