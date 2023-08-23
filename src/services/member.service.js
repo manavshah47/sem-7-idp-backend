@@ -115,11 +115,46 @@ const createMember = async (body) => {
     }
 }
 
+
+const checkPhoneExist = async (params) => {
+    try {
+        const {phone} = params
+        const user = await Member.findOne({phone})
+        if(user){
+            return {success : true, exists:true}
+        }else{
+            return {success : true, exists:false}
+
+        }
+    } catch (error) {
+        return {sucess:false,message:"Internal server error", data: error.message}
+    }
+}
+
+const checkEmailExist = async (params) => {
+    try {
+        const {email} = params
+        const user = await Member.findOne({email})
+        if(user){
+            return {success : true, exists:true}
+        }else{
+            return {success : true, exists:false}
+
+        }
+    } catch (error) {
+        return {sucess:false,message:"Internal server error", data: error.message}
+    }
+}
+
+
+
 module.exports = {
     login,
     showUserInfo,
     logout,
     errorPage,
     sendOtp,
-    createMember
+    createMember,
+    checkPhoneExist,
+    checkEmailExist
 }
