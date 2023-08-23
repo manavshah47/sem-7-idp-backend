@@ -2,12 +2,6 @@ const mongoose = require("mongoose");
 
 // employee schema
 const employeeSchema = new mongoose.Schema({
-    code: {
-        type:String,
-        required:true,
-        unique: true
-    },
-
     name: {
         type: String,
         required: true
@@ -20,11 +14,13 @@ const employeeSchema = new mongoose.Schema({
     
     department: {
         type: String,
+        enum: ["management", "logistics", "inventory"],
         required: true
     },
     
     designation: {
         type: String,
+        enum: ["manager", "employee"],
         required: true
     },
 
@@ -42,6 +38,7 @@ const employeeSchema = new mongoose.Schema({
 
     role: {
         type: [String],
+        enum: ["approver", "manager", "logistics"],
         required: true
     }
 });
