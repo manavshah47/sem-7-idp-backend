@@ -18,7 +18,7 @@ const sendOtp = async (body) => {
 
         // return error if input validation fails
         if(error) {
-            return {success:false, message:"Input validation failed", data:error.message}
+            return {success:false, message:"Enter a valid phone number", data:error.message}
         }
 
         const memberData = await Member.findOne({ phone })
@@ -35,6 +35,7 @@ const sendOtp = async (body) => {
         // store new otp in database
         await Otp.create({phone, otp})
 
+        // send sms message via twilio
         const response = await client.messages
         .create({
             body: `member verification code: ${otp}`,
@@ -79,7 +80,7 @@ const logout = async (session) => {
 }
 
 const errorPage = async () => {
-    return {success:false, message:"Incorrect Otp, send otp again."}
+    return {success:false, message:"Wrong OTP, Enter correct OTP."}
 }
 
 const createMember = async (body) => {

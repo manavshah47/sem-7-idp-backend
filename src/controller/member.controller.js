@@ -33,7 +33,6 @@ const sendOtp = async (req, res) => {
 
 const createMember = async (req, res) => {
     const createdMemberResponse = await memberService.createMember(req.body)
-    console.log(createdMemberResponse)
     res.json(createdMemberResponse)
 }
 
