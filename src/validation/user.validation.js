@@ -5,7 +5,7 @@ const Joi = require("joi")
 const email = Joi.string().email().required().messages({'any.only':'Enter a valid email'});
 
 // username schema
-const username = Joi.string().min(3).max(30).required().messages({'string.empty':'Username cannot be empty', 'string.min':'username cannot be less than 3 characters','string.max':'username cannot be more than 30 characters'});
+const username = Joi.string().min(2).max(30).required().messages({'string.empty':'Username cannot be empty', 'string.min':'username cannot be less than 3 characters','string.max':'username cannot be more than 30 characters'});
 
 // phone validation schema
 const phone = Joi.string().regex(/^[0-9]{10}$/).message({'any.only':'Invalid mobile number format'}).required()
