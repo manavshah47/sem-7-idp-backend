@@ -99,7 +99,7 @@ const companyInfoTwo = async (body, user, file) => {
         
         // membership data updation condition
         if(membershipData.membershipFormStatus == "company-info-2" || membershipData.membershipFormStatus == "company-info-3" || membershipData.membershipFormStatus == "member-info") {
-            
+
             // change membership data accodingly 
             membershipData.companyType = companyType
             membershipData.companyRegistrationYear = registrationYear
@@ -109,6 +109,16 @@ const companyInfoTwo = async (body, user, file) => {
             membershipData.companyRegistrationProofAttachment = {
                 file: membershipData.companyRegistrationProofAttachment.file,
                 documentName:registrationProofName
+            }
+
+            if(file){
+                // todo: IT IS NECESSARY TO FIRST DELETE THE PREVIOUS FILE
+                // file updation condition
+                const uploadedImageResponse = await uploadFile(file, registrationProofName)
+                membershipData.companyRegistrationProofAttachment = {
+                    file: uploadedImageResponse.imageURL,
+                    documentName: membershipData.companyRegistrationProofAttachment.documentName
+                }
             }
 
             membershipData.save();
@@ -170,7 +180,14 @@ const companyInfoThree = async (body, user, file) => {
             membershipData.companyTurnOverRange = companyTurnOverRange
             membershipData.companyProducts = JSON.parse(companyProducts)
             membershipData.membershipStatus = "pending"
-            
+
+            if(file){
+                // initial data addition conditon
+                const uploadedImageResponse = await uploadFile(file, "turnover-balance-sheet")
+                membershipData.turnOverBalanceSheet = uploadedImageResponse.imageURL
+            }
+
+
             membershipData.save()
             return { success: true, message:"Membership data updates successfully"}
         }
