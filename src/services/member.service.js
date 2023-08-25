@@ -38,7 +38,7 @@ const sendOtp = async (body) => {
         // send sms message via twilio
         const response = await client.messages
         .create({
-            body: `member verification code: ${otp}`,
+            body: `ERDA Member verification code: ${otp} (valid till 10 minutes)`,
             from: '+1 218 748 1407',
             to: `+91${phone}`
         })
