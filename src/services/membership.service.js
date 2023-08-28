@@ -238,10 +238,37 @@ const memberInfo = async (body, user) => {
     }
 }
 
-const getMemberships = async () => {
+// pagination of membership data
+const getMemberships = async (query) => {
     try {
-        const membershipData = await Membership.find({})
-        return {success: true, message:"Membership data", data:membershipData}
+        let { page, limit } = query;
+
+        // if page is not there in query of page is < 0 then set page as 1
+        if(!page || page <= 0){
+            page = 1;
+        }
+        
+        // if limit is not there in query of limit is < 0 then set limit as 1
+        if(!limit || limit <= 0){
+            limit = 1;
+        }
+
+        // count total number of documents for perticular type of user
+        const totalMembershipCount = await Membership.countDocuments({});
+
+        // count last page for pagination
+        const lastPage = Math.ceil(totalMembershipCount / limit)
+
+        // if requested page is not exists of exceed the total count 
+        if (page != lastPage && (page * limit) > totalMembershipCount + 1) {
+            return { sucess:false, "message": "reached to the end of the membership data" }
+        }
+
+        // find users as par pagination requirment
+        const memberships = await Membership.find({}).sort({'updatedAt':-1,'createdAt':-1}).select({ __v: 0, password:0 }).limit(limit * 1).skip((page - 1) * limit).exec()
+        
+        // return users data
+        return {success:true, message:`All Memberships`, data: {memberships: memberships, totalPages: lastPage, totalDocuments: totalMembershipCount, currentPage: page}}
     } catch(error){
         return { success:false, message:"Internal server error", data:error.message }
     }

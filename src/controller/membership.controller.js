@@ -22,7 +22,7 @@ const memberInfo = async (req, res) => {
 }
 
 const getMemberships = async (req, res) => {
-    const membershipData = await membershipService.getMemberships()
+    const membershipData = await membershipService.getMemberships(req.query)
     res.json(membershipData)
 }
 

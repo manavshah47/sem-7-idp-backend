@@ -14,3 +14,6 @@ module.exports.membershipController = require("./membership.controller")
 
 // chat controller export
 module.exports.chatController = require("./chat.controller")
+
+// auth controller export
+module.exports.authController = require("./auth.controller")

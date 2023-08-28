@@ -21,9 +21,6 @@ router.get("/show-admin-info", ensureAdmin, adminController.showAdminInfo)
 // 3. oauth callback route
 router.get("/callback", passport.authenticate('admin', { successRedirect:"http://localhost:3000/",failureRedirect: 'http://localhost:3001/api/error' }), adminController.logIn)
 
-// 4. logout admin route
-router.get('/logout', logoutUser, adminController.LogOut)
-
 // 5. create user route
 router.post("/create-user", ensureAdmin, adminController.createUser)
 
@@ -35,12 +32,5 @@ router.delete("/delete-user/:id", ensureAdmin, adminController.deleteUser)
 
 // 8. update user route
 router.put("/update-user", ensureAdmin, adminController.updateUser)
-
-// 9. check user exists with given emailId or not
-router.get("/check-email/:email", ensureAdmin, adminController.checkEmailExist)
-
-// 9. check user exists with given phone number or not
-router.get("/check-phone/:phone", ensureAdmin, adminController.checkPhoneExist)
-
 
 module.exports = router;

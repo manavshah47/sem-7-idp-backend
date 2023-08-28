@@ -21,17 +21,6 @@ const showAdminInfo = async (user) => {
     }
 }
 
-// logout admin service
-const logOut = async (session) => {
-    try{
-        session.destroy();
-        return {success:true, message:"user logged out successfully"}
-    } catch (error) {
-        
-        return {sucess:false,message:"Internal server error", data: error.message}
-    }
-}
-
 // create user service
 const createUser = async (body) => {
     try{
@@ -165,45 +154,11 @@ const updateUser = async (body) => {
     }
 }
 
-const checkPhoneExist = async (params) => {
-    try {
-        const {phone} = params
-        const user = await Employee.findOne({phone})
-        if(user){
-            return {success : true, exists:true}
-        }else{
-            return {success : true, exists:false}
-
-        }
-    } catch (error) {
-        return {sucess:false,message: error.message}
-    }
-}
-
-const checkEmailExist = async (params) => {
-    try {
-        let {email} = params
-        email = email.toLowerCase()
-        const user = await Employee.findOne({email})
-        if(user){
-            return {success : true, exists:true}
-        }else{
-            return {success : true, exists:false}
-        }
-    } catch (error) {
-        return {sucess:false,message: error.message}
-    }
-}
-
-
 module.exports = {
     logIn,
     showAdminInfo,
-    logOut,
     createUser,
     showUsers,
     deleteUser,
-    updateUser,
-    checkEmailExist,
-    checkPhoneExist
+    updateUser
 }

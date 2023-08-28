@@ -14,7 +14,11 @@ const memberRoute = require("./member.route")
 // import membership routes
 const membershipRoute = require("./membership.route")
 
+// import auth routes
 const chatRoute = require("./chat.route")
+
+// import auth routes
+const authRoute = require("./auth.route")
 
 // use /admin for admin routes
 router.use("/admin", adminRoute)
@@ -30,5 +34,8 @@ router.use("/membership", membershipRoute)
 
 // use /chat for chat routes
 router.use("/chat", chatRoute)
+
+// use /auth for auth routes
+router.use("/auth", authRoute)
 
 module.exports = router

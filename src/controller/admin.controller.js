@@ -13,12 +13,6 @@ const showAdminInfo = async (req, res) => {
     res.json(adminInfo)
 }
 
-// logout admin controller
-const LogOut = async (req, res) => {
-    const logOutResponse = await adminService.logOut(req.session)
-    res.json(logOutResponse)
-}
-
 // create user controller
 const createUser = async (req, res) => {
     const createdUserResponse = await adminService.createUser(req.body)
@@ -43,25 +37,11 @@ const updateUser = async (req, res) => {
     res.json(updatedUserInfo)
 }
 
-const checkPhoneExist = async(req,res) => {
-    const checkphone = await adminService.checkPhoneExist(req.params)
-    res.json(checkphone)
-}
-
-const checkEmailExist = async(req,res) => {
-    const checkemail = await adminService.checkEmailExist(req.params)
-    res.json(checkemail)
-}
-
-
 module.exports = {
     logIn,
     showAdminInfo,
-    LogOut,
     createUser,
     showUsers,
     deleteUser,
-    updateUser,
-    checkEmailExist,
-    checkPhoneExist
+    updateUser
 }

@@ -2,7 +2,7 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 const LocalStrategy = require('passport-local').Strategy
 // Admin model import
-const { Admin, Otp } = require('../models')
+const { Admin, Otp, Employee } = require('../models')
 const { Member } = require("../models/member.model")
 
 const { userValidation } = require("../validation")
@@ -85,16 +85,22 @@ module.exports = function (passport) {
                 return done(null, false)
             }
 
-            const userData = await Member.findOne({phone:id})
-            if(!userData){
-                return done(null, false)
-            }
+            // const userData = await Member.findOne({phone:id})
+            // if(!userData){
+            //     return done(null, false)
+            // }
 
             const otpResponse = await Otp.findOne({phone:id, otp: password})
 
             // if user not exists then show error message
             if(!otpResponse){
                 return done(null, false)
+            }
+
+            let userData = await Member.findOne({phone:id})
+
+            if(userData == null) {
+                userData = await Employee.findOne({phone:id})
             }
 
             // if user exists then start user session

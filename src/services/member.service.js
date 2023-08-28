@@ -1,4 +1,4 @@
-const { Otp, Email } = require("../models");
+const { Otp, Email, Employee } = require("../models");
 const { transporter, membershipIdGenerator } = require("../util");
 
 const { Member } = require("../models/member.model")
@@ -23,8 +23,10 @@ const sendOtp = async (body) => {
         }
 
         const memberData = await Member.findOne({ phone })
-        if(!memberData || memberData === null || memberData === undefined){
-            return {success:false,message:"no member with given phone number"}
+        const employeeData = await Employee.findOne({phone})
+
+        if(memberData == null && employeeData == null){
+            return {success:false,message:"no user with given phone number"}
         }
         
         let otp = Math.floor(100000 + Math.random() * 900000);  //Generate 6 digit otp.
@@ -39,9 +41,9 @@ const sendOtp = async (body) => {
         // send sms message via twilio
         const response = await client.messages
         .create({
-            body: `\nHi ${memberData.firstName + " " + memberData.lastName}, 
+            body: `\nHi ${memberData ? (memberData.firstName + " " +  + memberData.lastName) : employeeData?.name}, 
             We're implementing two-step verification for your ERDA'S MEMBERSHIP account sign in. 
-            Your verification code is ${otp}. 
+            Your verification code is ${otp}.
             Please use this code within 10 minutes to complete the process. 
             Keep your account safe!`,
             from: '+1 218 748 1407',
@@ -203,13 +205,15 @@ const createMember = async (body) => {
 const checkPhoneExist = async (params) => {
     try {
         const {phone} = params
-        const user = await Member.findOne({phone})
-        if(user){
+        const memberWithPhone = await Member.findOne({phone})
+        const employeeWithPhone = await Employee.findOne({phone})
+        
+        if(memberWithPhone || employeeWithPhone){
             return {success : true, exists:true}
-        }else{
+        } else {
             return {success : true, exists:false}
-
         }
+
     } catch (error) {
         return {sucess:false,message: error.message}
     }
@@ -219,12 +223,12 @@ const checkEmailExist = async (params) => {
     try {
         let {email} = params
         email = email.toLowerCase()
-        const user = await Member.findOne({email})
-        if(user){
+        const memberWithEmail = await Member.findOne({email})
+        const employeeWithEmail = await Member.findOne({email})
+        if(memberWithEmail || employeeWithEmail){
             return {success : true, exists:true}
         }else{
             return {success : true, exists:false}
-
         }
     } catch (error) {
         return {sucess:false,message: error.message}
@@ -233,13 +237,13 @@ const checkEmailExist = async (params) => {
 
 
 module.exports = {
-    login,
+    // login,
     showUserInfo,
-    logout,
+    // logout,
     errorPage,
-    sendOtp,
+    // sendOtp,
     createMember,
-    checkPhoneExist,
-    checkEmailExist,
+    // checkPhoneExist,
+    // checkEmailExist,
     sendEmail
 }
