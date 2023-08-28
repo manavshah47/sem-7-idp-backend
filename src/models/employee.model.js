@@ -7,14 +7,13 @@ const employeeSchema = new mongoose.Schema({
         required: true
     },
 
-    password: {
-        type: String,
-        required: true
+    employeeId : {
+        type : String
     },
     
     department: {
         type: String,
-        enum: ["management", "logistics", "inventory"],
+        enum: ["hey", "by"],
         required: true
     },
     
@@ -36,9 +35,9 @@ const employeeSchema = new mongoose.Schema({
         unique: true
     },
 
-    role: {
+    typeOfUser: {
         type: [String],
-        enum: ["approver", "manager", "logistics"],
+        enum: ["approver", "magazine-manager"],
         required: true
     }
 });

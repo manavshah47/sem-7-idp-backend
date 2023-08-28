@@ -1,7 +1,7 @@
 // user model import
-const { User } = require("../models")
+const { User, Employee } = require("../models")
 const Joi = require("joi")
-const { userValidation } = require("../validation")
+const { employeeValidation } = require("../validation")
 
 // login admin service
 const logIn = async (user) => {
@@ -36,10 +36,10 @@ const logOut = async (session) => {
 const createUser = async (body) => {
     try{
         // destruct user data from body of the request
-        const { id, name, password, typeOfUser } = body;
+        const { email, name, phone, department, designation, typeOfUser } = body;
 
         // joi input validation
-        const { error } = userValidation.createUserValidationSchema.validate({id, name, password, typeOfUser})
+        const { error } =  employeeValidation.createEmployeeValidationSchema.validate({ ...body })
         
         // return error if input validation fails
         if(error) {
@@ -48,14 +48,16 @@ const createUser = async (body) => {
 
         // create user data object as per schema requirment
         const userData = {
-            id: id.toLowercase(),
+            email: email.toLowerCase(),
             name,
-            password,
+            phone,
+            department,
+            designation,
             typeOfUser
         };
 
         // create user in backend
-        const user = await User.create(userData);
+        const user = await Employee.create(userData);
         return {success:true, message:"User created successfully", data: user}
     } catch (error) {
         
@@ -163,35 +165,36 @@ const updateUser = async (body) => {
     }
 }
 
-// check user exists or not service
-const checkExists = async (body) => {
-    try{
-        // fetch id (emailId) from body of the request
-        const { id } = body;
-        
-        // joi input validation
-        const { error } = userValidation.emailValidationSchema.validate({id})
-        
-        // return error if input validation fails
-        if(error) {
-            return {success:false, message:"Input validation failed", data:error.message}
+const checkPhoneExist = async (params) => {
+    try {
+        const {phone} = params
+        const user = await Employee.findOne({phone})
+        if(user){
+            return {success : true, exists:true}
+        }else{
+            return {success : true, exists:false}
+
         }
-
-
-        // find user with given id (emailId)
-        const userData = await User.findOne({id})
-        
-        // if user with given emailId exists, then we cannot create new user.
-        if(userData){
-            return {success:true, message:"User with given emailId exists", createUser: false}
-        }
-
-        // we can create user with given emailId as no user with given emailId is there
-        return {success:true, message:"User can be created with given emailId", createUser: true}
     } catch (error) {
-        return {sucess:false,message:"Internal server error", data: error.message}
+        return {sucess:false,message: error.message}
     }
 }
+
+const checkEmailExist = async (params) => {
+    try {
+        let {email} = params
+        email = email.toLowerCase()
+        const user = await Employee.findOne({email})
+        if(user){
+            return {success : true, exists:true}
+        }else{
+            return {success : true, exists:false}
+        }
+    } catch (error) {
+        return {sucess:false,message: error.message}
+    }
+}
+
 
 module.exports = {
     logIn,
@@ -201,5 +204,6 @@ module.exports = {
     showUsers,
     deleteUser,
     updateUser,
-    checkExists
+    checkEmailExist,
+    checkPhoneExist
 }

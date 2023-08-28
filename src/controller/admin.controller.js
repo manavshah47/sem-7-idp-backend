@@ -43,11 +43,16 @@ const updateUser = async (req, res) => {
     res.json(updatedUserInfo)
 }
 
-// email id exists or not controller
-const checkExists = async (req, res) => {
-    const userExistsResponse = await adminService.checkExists(req.body)
-    res.json(userExistsResponse)
+const checkPhoneExist = async(req,res) => {
+    const checkphone = await adminService.checkPhoneExist(req.params)
+    res.json(checkphone)
 }
+
+const checkEmailExist = async(req,res) => {
+    const checkemail = await adminService.checkEmailExist(req.params)
+    res.json(checkemail)
+}
+
 
 module.exports = {
     logIn,
@@ -57,5 +62,6 @@ module.exports = {
     showUsers,
     deleteUser,
     updateUser,
-    checkExists
+    checkEmailExist,
+    checkPhoneExist
 }

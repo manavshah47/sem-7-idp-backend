@@ -37,6 +37,10 @@ router.delete("/delete-user/:id", ensureAdmin, adminController.deleteUser)
 router.put("/update-user", ensureAdmin, adminController.updateUser)
 
 // 9. check user exists with given emailId or not
-router.post("/check-user-exists", ensureAdmin, adminController.checkExists)
+router.get("/check-email/:email", ensureAdmin, adminController.checkEmailExist)
+
+// 9. check user exists with given phone number or not
+router.get("/check-phone/:phone", ensureAdmin, adminController.checkPhoneExist)
+
 
 module.exports = router;

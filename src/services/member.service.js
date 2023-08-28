@@ -18,7 +18,7 @@ const sendOtp = async (body) => {
 
         // return error if input validation fails
         if(error) {
-            return {success:false, message:"Enter a valid phone number", data:error.message}
+            return {success:false, message:error.message}
         }
 
         const memberData = await Member.findOne({ phone })
@@ -46,7 +46,7 @@ const sendOtp = async (body) => {
         return {success:true, message: "Message sent successfully"}
 
     } catch (error) {
-        return {sucess:false,message:"Internal server error", data: error.message}
+        return {sucess:false,data: error.message}
     }
 }
 
@@ -55,7 +55,7 @@ const login = async (user) => {
     try{
         return {success:true, message:"User logged In successfully", data:user}
     } catch (error) {
-        return {sucess:false,message:"Internal server error", data: error.message}
+        return {sucess:false,message:error.message}
     }
 }
 
@@ -64,7 +64,7 @@ const showUserInfo = async (user) => {
     try{
         return {success:true, message:"Current user", data:user}
     } catch (error) {
-        return {sucess:false,message:"Internal server error", data: error.message}
+        return {sucess:false,message:error.message}
     }
 }
 
@@ -75,7 +75,7 @@ const logout = async (session) => {
         session.destroy();
         return {success:true, message:"User successfully logged out"}
     } catch (error) {
-        return {sucess:false,message:"Internal server error", data: error.message}
+        return {sucess:false,message:error.message}
     }
 }
 
@@ -92,13 +92,16 @@ const createMember = async (body) => {
 
         // return error if input validation fails
         if(error) {
-            return {success:false, message:"Input validation failed", data:error.message}
+            return {success:false, message : error.message}
         }
+
+        let { email, ...rest } = body
 
         const memberId = await membershipIdGenerator()
 
         const memberData = {
-            ...body,
+            email: email.toLowerCase(),
+            ...rest,
             memberId
         }
 
@@ -112,7 +115,7 @@ const createMember = async (body) => {
 
         return { success:true, message:"Member Created successfully" }
     } catch (error) {
-        return {sucess:false,message:"Internal server error", data: error.message}
+        return {sucess:false,message: error.message}
     }
 }
 
@@ -128,13 +131,14 @@ const checkPhoneExist = async (params) => {
 
         }
     } catch (error) {
-        return {sucess:false,message:"Internal server error", data: error.message}
+        return {sucess:false,message: error.message}
     }
 }
 
 const checkEmailExist = async (params) => {
     try {
-        const {email} = params
+        let {email} = params
+        email = email.toLowerCase()
         const user = await Member.findOne({email})
         if(user){
             return {success : true, exists:true}
@@ -143,7 +147,7 @@ const checkEmailExist = async (params) => {
 
         }
     } catch (error) {
-        return {sucess:false,message:"Internal server error", data: error.message}
+        return {sucess:false,message: error.message}
     }
 }
 
