@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-// otp schema
-const otpSchema = new mongoose.Schema({
-    phone: {
+// email schema
+const emailSchema = new mongoose.Schema({
+    email: {
         type: String,
         required: true,
         unique: true
@@ -14,8 +14,8 @@ const otpSchema = new mongoose.Schema({
     expire_at: {type: Date, default: Date.now, expires: 3600}
 });
 
-// create otp model from user schema
-const Otp = mongoose.model("otp", otpSchema);
+// create email model from user schema
+const Email = mongoose.model("email", emailSchema);
 
-// otp model export
-module.exports = Otp
+// email model export
+module.exports = Email

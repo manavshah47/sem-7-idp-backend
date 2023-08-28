@@ -15,6 +15,4 @@ async function membershipIdGenerator() {
     return membershipId;
 }
 
-module.exports = {
-    membershipIdGenerator
-}
+module.exports = membershipIdGenerator

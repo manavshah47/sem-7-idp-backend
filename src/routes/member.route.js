@@ -7,7 +7,7 @@ const passport = require("passport")
 const { logoutUser } = require("../middleware/auth.middleware")
 const { ensureMember } = require("../middleware/user.middleware")
 
-const { memberController } = require("../controller");
+const { memberController, membershipController } = require("../controller");
 
 // 1. user login route
 router.post("/login", passport.authenticate('member', {failureRedirect: 'http://localhost:3001/api/member/error' }), memberController.login)
@@ -33,5 +33,8 @@ router.get("/check-phone/:phone",memberController.checkPhoneExist)
 //create email check
 router.get("/check-email/:email",memberController.checkEmailExist)
 
+
+// send email route
+router.post("/send-email", memberController.sendEmail)
 
 module.exports = router

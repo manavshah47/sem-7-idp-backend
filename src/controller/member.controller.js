@@ -46,6 +46,11 @@ const checkEmailExist = async(req,res) => {
     res.json(checkemail)
 }
 
+const sendEmail = async (req, res) => {
+    const emailSentResponse = await memberService.sendEmail(req.body)
+    res.json(emailSentResponse)
+}
+
 module.exports = {
     login,
     showUserInfo,
@@ -54,5 +59,6 @@ module.exports = {
     sendOtp,
     createMember,
     checkPhoneExist,
-    checkEmailExist
+    checkEmailExist,
+    sendEmail
 }
