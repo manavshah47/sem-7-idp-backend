@@ -18,3 +18,5 @@ module.exports.Counter = require("./counter.model")
 // otp model export
 module.exports.Otp = require("./otp.model")
 
+// email model export
+module.exports.Email = require("./email.model")

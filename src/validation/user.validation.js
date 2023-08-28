@@ -18,7 +18,8 @@ const createUserValidationSchema = Joi.object({
     firstName:username,
     lastName: username,
     email,
-    phone
+    phone,
+    otp
 });
 
 // validation schema for login user api
@@ -33,8 +34,13 @@ const phoneNumberValidationSchema = Joi.object({
     phone
 })
 
+const emailValidationSchema = Joi.object({
+    email
+})
+
 module.exports = {
     createUserValidationSchema,
     logInValidationSchema,
-    phoneNumberValidationSchema
+    phoneNumberValidationSchema,
+    emailValidationSchema
 }
