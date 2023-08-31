@@ -36,7 +36,7 @@ const employeeSchema = new mongoose.Schema({
     },
 
     typeOfUser: {
-        type: [String],
+        type: String,
         enum: ["approver", "magazine-manager"],
         required: true
     }

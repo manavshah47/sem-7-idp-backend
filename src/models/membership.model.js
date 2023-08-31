@@ -167,6 +167,10 @@ const membershipSchema = new mongoose.Schema({
         default: "draft"
     },
 
+    approverMessage: {
+        type: String
+    },
+
     paymentStatus: {
         type: Boolean,
         default: false

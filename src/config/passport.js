@@ -46,30 +46,7 @@ module.exports = function (passport) {
         })
     )
 
-    // passport local strategy (for employee)
-    passport.use('employee',
-        new LocalStrategy({
-                usernameField: 'id',
-                passwordField:'password'
-            }
-            , async (id, password, done) => {
-                // find user in database based on their id and password
-                let emailId = id.toLowerCase();
-
-                const userData = await Member.findOne({id: emailId, password}).select({password:0, __v:0, _id:0, otp:0});
-
-                // if user not exists then show error message
-                if(!userData){
-                    return done(null, false)
-                }
-
-                // if user exists then start user session
-                return done(null, userData)
-            }
-        )
-    )
-
-    // passport local strategy (for members)
+    // passport local strategy (for members as well as employee)
     passport.use('member',
         new LocalStrategy({
             usernameField: 'id',
@@ -103,8 +80,13 @@ module.exports = function (passport) {
                 userData = await Employee.findOne({phone:id})
             }
 
-            // if user exists then start user session
-            return done(null, userData)
+            if(userData != null){
+                // if user exists then start user session
+                console.log("member resonse")
+                return done(null, userData)
+            }
+            // not a member and not a employee condition
+            return done(null, false)
         }
         )
     )
@@ -118,7 +100,12 @@ module.exports = function (passport) {
     // called whenever new request occours for current session user
     passport.deserializeUser(async (user, done) => {
         // find current user from user database
-        const currUser = await Member.findOne({phone:user.phone}).select({password:0, __v:0, _id:0})
+        let currUser = await Member.findOne({phone:user.phone}).select({password:0, __v:0, _id:0})
+        if(currUser){
+            done(null, currUser)
+        }
+
+        currUser = await Employee.findOne({phone:user.phone}).select({password:0, __v:0, _id:0})
         if(currUser){
             done(null, currUser)
         }
