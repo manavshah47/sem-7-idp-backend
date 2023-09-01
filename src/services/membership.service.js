@@ -1,5 +1,5 @@
 // import of models (database schema)
-const { Membership } = require("../models");
+const { Membership, Employee } = require("../models");
 
 // validation schema import
 const { membershipValidation } = require("../validation");
@@ -219,11 +219,37 @@ const companyInfoThree = async (body, user, file) => {
 
 const applyForMembership = async (user) => {
     try {
+        const { phone } = user
 
+        const membershipData = await Membership.findOne({'member.phone':phone})
+
+        if(!membershipData) {
+            return {success:false, message:"No Membership for given Member"}
+        }
+
+        if(membershipData.membershipFormStatus != "company-info-3"){
+            return { success: false, message:"Enter required form details first, then apply for membership"}
+        }
+        
+        if(membershipData.membershipStatus == "approved" || membershipData.membershipStatus == "rejected"){
+            return { success: false, message:"You cannnot apply again for approved or rejected membership."}
+        }
+        
+        if(membershipData.membershipStatus == "pending") {
+            return { success: false, message:"You have applied for membership already."}
+        }
+
+        const approver = await Employee.findOneAndUpdate({"typeOfUser":"approver"}, {$inc:{pendingMemberships:1}},{sort: {pendigMemberships: -1}})
+        console.log("approver: ", approver)
+
+        membershipData.membershipStatus = "pending"
+        membershipData.approver.phone = approver.phone
+        membershipData.save()
+
+        return { success:true, message:"Membership form submitted successfully"}
     } catch (error) {
-
+        return { success:false, message:"Internal server error", data:error.message }
     } 
-    return { success:false, message:"Internal server error", data:error.message }
 }
 
 const memberInfo = async (body, user) => {
@@ -321,5 +347,6 @@ module.exports = {
     companyInfoThree,
     memberInfo,
     getMemberships,
-    getMemberShipData
+    getMemberShipData,
+    applyForMembership
 }

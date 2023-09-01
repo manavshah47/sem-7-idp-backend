@@ -19,6 +19,9 @@ const designation = Joi.string().valid("manager","employee").required().messages
 // type validation schema 
 const typeOfUser = Joi.string().valid("approver", "magazine-manager").required().messages({'string.empty':'type cannot be empty'});
 
+// membership status schema 
+const membershipStatus = Joi.string().valid("reverted", "rejected", "approved").required().messages({'string.empty':'type cannot be empty'});
+
 
 // validation schema for create user api
 const createEmployeeValidationSchema = Joi.object({
@@ -30,8 +33,13 @@ const createEmployeeValidationSchema = Joi.object({
     typeOfUser
 });
 
-
+const approveMembershipValidationSchema = Joi.object({
+    message:Joi.string().min(5).max(1000).required().messages({'string.empty':'Message cannot be empty', 'string.min':'Message cannot be less than 5 characters','string.max':'username cannot be more than 1000 characters'}),
+    membershipStatus,
+    memberPhone: phone
+})
 
 module.exports = {
-    createEmployeeValidationSchema
+    createEmployeeValidationSchema,
+    approveMembershipValidationSchema
 }

@@ -1,40 +1,49 @@
-// login user service
-const login = async (user) => {
-    try{
-        return {success:true, message:"User logged In successfully", data:user}
+const {Membership} = require("../models")
+const { employeeValidation } = require("../validation")
+
+const approveMembership = async (body, user) => {
+    try {
+        const { phone } = user
+
+        const { message, membershipStatus, memberPhone } = body
+
+        // joi input validation
+         // joi input validation
+         const { error } = employeeValidation.approveMembershipValidationSchema.validate({...body})
+
+         // return error if input validation fails
+         if(error) {
+             return {success:false, message:error.message}
+         }
+
+        // find membership for given member in database
+        const membershipData = await Membership.findOne({"member.phone":memberPhone})
+
+        if(!membershipData) {
+            return {success:false, message:"No membership with given number"}
+        }
+
+        // if current approver is not a approver for given membership then return response
+        if(membershipData.approver.phone != phone) {
+            return {success:false, message:"You are not a approver for given membership"}
+        }
+
+        // approve membership if it is in pending or reverted status
+        if(membershipData.membershipStatus == "pending" || membershipData.membershipStatus == "reverted"){
+            membershipData.approver.message = message
+            membershipData.membershipStatus = membershipStatus
+            membershipData.save()
+            return {success:true, message:`Membership ${membershipStatus} successfully`}
+        }
+
+        return {success:false, message:"You cannot approve already approved or draft staged membership"}
+
     } catch (error) {
-        return {sucess:false,message:"Internal server error", data: error.message}
+        return {success:false, message:"Internal server error", data:error.message}
     }
 }
 
-// show user info service
-const showUserInfo = async (user) => {
-    try{
-        return {success:true, message:"Current user", data:user}
-    } catch (error) {
-        return {sucess:false,message:"Internal server error", data: error.message}
-    }
-}
-
-// logout user service
-const logout = async (session) => {
-    try{
-        // destroy current user session
-        session.destroy();
-        return {success:true, message:"User successfully logged out"}
-    } catch (error) {
-        
-        return {sucess:false,message:"Internal server error", data: error.message}
-    }
-}
-
-const errorPage = async () => {
-    return {success:false, message:"Incorrect id or password"}
-}
 
 module.exports = {
-    login,
-    showUserInfo,
-    logout,
-    errorPage
+    approveMembership
 }

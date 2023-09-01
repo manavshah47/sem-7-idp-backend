@@ -24,4 +24,7 @@ router.get("/all-memberships", membershipController.getMemberships)
 // 6. get membership
 router.get("/membership/:memberId", membershipController.getMemberShipData)
 
+// 7. apply for membership route
+router.put("/apply-for-membership", ensureMember, membershipController.applyForMembership)
+
 module.exports = router

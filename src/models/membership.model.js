@@ -163,18 +163,23 @@ const membershipSchema = new mongoose.Schema({
 
     membershipStatus: {
         type: String,
-        enum: ["draft","pending", "reverted", "approved"],
+        enum: ["draft","pending", "reverted", "approved", "rejected"],
         default: "draft"
     },
 
-    approverMessage: {
-        type: String
+    approver: {
+        phone: {
+            type: String
+        },
+        message: {
+            type: String
+        }
     },
 
     paymentStatus: {
         type: Boolean,
         default: false
-    }
+    },
 });
 
 // create member model from user schema

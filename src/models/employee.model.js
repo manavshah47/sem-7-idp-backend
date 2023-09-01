@@ -39,6 +39,11 @@ const employeeSchema = new mongoose.Schema({
         type: String,
         enum: ["approver", "magazine-manager"],
         required: true
+    },
+
+    pendingMemberships: {
+        type: Number,
+        default: 0
     }
 });
 

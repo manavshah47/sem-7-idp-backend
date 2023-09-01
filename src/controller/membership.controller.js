@@ -31,11 +31,17 @@ const getMemberShipData =  async (req, res) => {
     res.json(membershipData)
 }
 
+const applyForMembership = async (req, res) => {
+    const appliedMembershipResponse = await membershipService.applyForMembership(req.user)
+    res.json(appliedMembershipResponse)
+}
+
 module.exports = {
     companyBasicInfo,
     companyInfoTwo,
     companyInfoThree,
     memberInfo,
     getMemberships,
-    getMemberShipData
+    getMemberShipData,
+    applyForMembership
 }
