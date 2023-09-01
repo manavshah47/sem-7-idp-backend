@@ -204,9 +204,10 @@ const companyInfoThree = async (body, user, file) => {
             companyERDARequiredServices: JSON.parse(companyERDARequiredServices),
             turnOverBalanceSheet: uploadedImageResponse.imageURL,
             membershipFormStatus:"company-info-3",
-            membershipStatus : "pending"
         }
-
+        // this will be done when user verifies info added.
+        // membershipStatus : "pending"
+        
         await Membership.findOneAndUpdate({"member.phone":user.phone}, {...updatedMembershipData})
 
         return { success: true, message:"Company Info added successfully"}
@@ -214,6 +215,15 @@ const companyInfoThree = async (body, user, file) => {
     } catch (error){
         return { success:false, message:"Internal server error", data:error.message }
     }
+}
+
+const applyForMembership = async (user) => {
+    try {
+
+    } catch (error) {
+
+    } 
+    return { success:false, message:"Internal server error", data:error.message }
 }
 
 const memberInfo = async (body, user) => {
