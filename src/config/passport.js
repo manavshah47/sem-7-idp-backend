@@ -20,7 +20,6 @@ module.exports = function (passport) {
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                console.log("Admin Authentication Called")
                 // find the admin in our database 
                 let user = await Admin.findOne({ adminId: profile.id })
 
@@ -82,7 +81,6 @@ module.exports = function (passport) {
 
             if(userData != null){
                 // if user exists then start user session
-                console.log("member resonse")
                 return done(null, userData)
             }
             // not a member and not a employee condition
@@ -103,17 +101,19 @@ module.exports = function (passport) {
         let currUser = await Member.findOne({phone:user.phone}).select({password:0, __v:0, _id:0})
         if(currUser){
             done(null, currUser)
+            return;
         }
-
+        
         currUser = await Employee.findOne({phone:user.phone}).select({password:0, __v:0, _id:0})
         if(currUser){
             done(null, currUser)
+            return;
         }
 
         // find current user from admin database
-        else {
-            const admin = await Admin.findOne({adminId:user.adminId})
-            done(null, admin)
-        }
+        const admin = await Admin.findOne({adminId:user.adminId})
+        done(null, admin)
+        return;
+        
     })
 }

@@ -111,10 +111,21 @@ const checkEmailExist = async (params) => {
 }
 
 
+// show current logged in user
+const showUserData = async (user) => {
+    try{
+        return {success:true, message:"Current user", data:user}
+    } catch (error) {
+        return {sucess:false,message:error.message}
+    }
+}
+
+
 module.exports = {
     login,
     logout,
     sendOtp,
     checkPhoneExist,
-    checkEmailExist
+    checkEmailExist,
+    showUserData
 }

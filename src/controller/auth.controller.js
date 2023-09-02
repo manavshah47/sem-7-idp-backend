@@ -28,10 +28,16 @@ const checkEmailExist = async(req,res) => {
     res.json(checkemail)
 }
 
+const showUserData = async (req, res) => {
+    const userDataResponse = await authService.showUserData(req.user)
+    res.json(userDataResponse)
+}
+
 module.exports = {
     login,
     logout,
     sendOtp,
     checkPhoneExist,
-    checkEmailExist
+    checkEmailExist,
+    showUserData
 }

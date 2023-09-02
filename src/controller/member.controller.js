@@ -1,13 +1,6 @@
 const { memberService } = require("../services")
 
 
-// show user info controller
-const showUserInfo = async (req, res) => {
-    const userInfo = await memberService.showUserInfo(req.user)
-    res.json(userInfo)
-}
-
-
 // error page just to show user not exists with given user credentials
 const errorPage = async (req, res) => {
     const errorPageResponse = await memberService.errorPage()
@@ -27,7 +20,6 @@ const sendEmail = async (req, res) => {
 }
 
 module.exports = {
-    showUserInfo,
     errorPage,
     createMember,
     sendEmail

@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router()
 
-const { ensureMember } = require("../middleware/user.middleware")
+const { ensureMember, ensureApprover } = require("../middleware/user.middleware")
 
 const { membershipController } = require("../controller");
 
@@ -22,7 +22,7 @@ router.put("/member-info", ensureMember, membershipController.memberInfo)
 router.get("/all-memberships", membershipController.getMemberships)
 
 // 6. get membership
-router.get("/membership/:memberId", membershipController.getMemberShipData)
+router.get("/membership/:memberPhone", membershipController.getMemberShipData)
 
 // 7. apply for membership route
 router.put("/apply-for-membership", ensureMember, membershipController.applyForMembership)

@@ -27,7 +27,7 @@ const logoutUser = (req,res,next) => {
             res.redirect('/error')
         }
         // logout user confirmation message is sent in next
-        next()
+        return next()
     })
 }
 

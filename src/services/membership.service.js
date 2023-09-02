@@ -187,7 +187,6 @@ const companyInfoThree = async (body, user, file) => {
                 membershipData.turnOverBalanceSheet = uploadedImageResponse.imageURL
             }
 
-
             membershipData.save()
             return { success: true, message:"Membership data updates successfully"}
         }
@@ -236,12 +235,12 @@ const applyForMembership = async (user) => {
         }
         
         if(membershipData.membershipStatus == "pending") {
-            return { success: false, message:"You have applied for membership already."}
+            return { success: false, message:"You have already applied for membership."}
         }
 
         const approver = await Employee.findOneAndUpdate({"typeOfUser":"approver"}, {$inc:{pendingMemberships:1}},{sort: {pendigMemberships: -1}})
         console.log("approver: ", approver)
-
+        
         membershipData.membershipStatus = "pending"
         membershipData.approver.phone = approver.phone
         membershipData.save()
@@ -249,7 +248,7 @@ const applyForMembership = async (user) => {
         return { success:true, message:"Membership form submitted successfully"}
     } catch (error) {
         return { success:false, message:"Internal server error", data:error.message }
-    } 
+    }
 }
 
 const memberInfo = async (body, user) => {
@@ -312,9 +311,9 @@ const getMemberships = async (query) => {
 
 const getMemberShipData = async (params) => {
     try {
-        const { memberId } = params
+        const { memberPhone } = params
 
-        let membershipData = await Membership.findOne({'member.memberId':memberId})
+        let membershipData = await Membership.findOne({'member.phone':memberPhone})
 
         if(!membershipData){
             return { success: false, message:"No membership with given Id" }

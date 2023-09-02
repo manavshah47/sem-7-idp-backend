@@ -4,7 +4,7 @@ const router = express.Router()
 
 const passport = require("passport")
 
-const { logoutUser } = require("../middleware/auth.middleware")
+const { logoutUser, ensureAuthenticated } = require("../middleware/auth.middleware")
 const { ensureMember } = require("../middleware/user.middleware")
 
 const { authController, membershipController } = require("../controller");
@@ -23,5 +23,7 @@ router.get("/check-phone/:phone",authController.checkPhoneExist)
 
 //create email check
 router.get("/check-email/:email",authController.checkEmailExist)
+
+router.get("/show-current-user", ensureAuthenticated, authController.showUserData)
 
 module.exports = router

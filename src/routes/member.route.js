@@ -2,11 +2,7 @@
 const express = require("express");
 const router = express.Router()
 
-const { ensureMember } = require("../middleware/user.middleware")
 const { memberController } = require("../controller");
-
-// 2. user info route (extra)
-router.get("/show-member-info", ensureMember, memberController.showUserInfo)
 
 // dummy route to showcase user not exists with given credentials
 router.get("/error", memberController.errorPage)
