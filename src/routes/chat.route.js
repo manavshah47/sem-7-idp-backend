@@ -6,10 +6,16 @@ const router = express.Router()
 const { chatController } = require("../controller");
 const { ensureMember } = require("../middleware/user.middleware");
 
-// 1. sign up chat route
-router.post('/sign-up', ensureMember, chatController.SignUp)
+// 1. search available users
+router.post('/search-users', ensureMember, chatController.searchAvailableUsers)
 
-// 2. login chat controller
-router.post('/login', ensureMember, chatController.Login)
+// 2. create or get one to one chat
+router.get("/get-one-to-one-chat/:receiverPhone", ensureMember, chatController.createOrGetAOneOnOneChat)
+
+// 3. delete one to one chat
+router.delete("/delete-one-to-one-chat/:chatId", ensureMember, chatController.deleteOneOnOneChat)
+
+// 4. all chats of perticular user
+router.get("/all-chats", ensureMember, chatController.getAllChats)
 
 module.exports = router;

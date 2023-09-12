@@ -1,6 +1,11 @@
 // express import
 const express = require("express");
 
+const { createServer } = require("http")
+const { Server } = require("socket.io")
+
+const { initializeSocketIO } = require("./socket")
+
 // initialize app
 const app = express();
 
@@ -40,12 +45,25 @@ const port = process.env.PORT || 3001;
 // app.set("trust proxy", 1);
 
 // cors to access apis from frontend
+
+const httpServer = createServer(app);
+
+const io = new Server(httpServer, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3005",
+    credentials: true,
+  },
+});
+
+app.set("io", io); // using set method to mount the `io` instance on the app to avoid usage of `global`
+
 app.use(
-    cors({
-      origin:"http://localhost:3000",
-      methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-      credentials: true,
-    })
+  cors({
+    origin:"http://localhost:3005",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
 )
 
 // express-session
@@ -101,7 +119,9 @@ app.use(fileUpload({
 // all routes are inside this
 app.use('/api', Routes)
 
+initializeSocketIO(io);
+
 // api's listening port and host
-app.listen(port, hostname, () => {
+httpServer.listen(port, hostname, () => {
     console.log(`Server running at http://${hostname}:${port}/`);
 });

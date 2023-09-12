@@ -20,3 +20,8 @@ module.exports.Otp = require("./otp.model")
 
 // email model export
 module.exports.Email = require("./email.model")
+
+
+module.exports.Chat = require("./chat.model")
+
+module.exports.Message = require("./message.model")

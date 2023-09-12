@@ -1,5 +1,5 @@
 const { Otp, Email, Employee } = require("../models");
-const { transporter, membershipIdGenerator } = require("../util");
+const { transporter, membershipIdGenerator } = require("../utils");
 
 const { Member } = require("../models/member.model")
 
@@ -19,14 +19,14 @@ const sendOtp = async (body) => {
 
         // return error if input validation fails
         if(error) {
-            return {success:false, message:error.message}
+            return {success:false, message:"Enter valid phone number"}
         }
 
         const memberData = await Member.findOne({ phone })
         const employeeData = await Employee.findOne({phone})
 
         if(memberData == null && employeeData == null){
-            return {success:false,message:"no user with given phone number"}
+            return {success:false,message:"No user with given phone number"}
         }
         
         let otp = Math.floor(100000 + Math.random() * 900000);  //Generate 6 digit otp.

@@ -98,13 +98,13 @@ module.exports = function (passport) {
     // called whenever new request occours for current session user
     passport.deserializeUser(async (user, done) => {
         // find current user from user database
-        let currUser = await Member.findOne({phone:user.phone}).select({password:0, __v:0, _id:0})
+        let currUser = await Member.findOne({phone:user.phone}).select({password:0, __v:0})
         if(currUser){
             done(null, currUser)
             return;
         }
         
-        currUser = await Employee.findOne({phone:user.phone}).select({password:0, __v:0, _id:0})
+        currUser = await Employee.findOne({phone:user.phone}).select({password:0, __v:0})
         if(currUser){
             done(null, currUser)
             return;
