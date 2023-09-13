@@ -1,4 +1,4 @@
-const { membershipService, memberService } = require('../services')
+const { membershipService } = require('../services')
 
 const companyBasicInfo = async (req, res) => {
     const companyBasicInfoResponse = await membershipService.companyBasicInfo(req.body, req.user)
@@ -22,7 +22,7 @@ const memberInfo = async (req, res) => {
 }
 
 const getMemberships = async (req, res) => {
-    const membershipData = await membershipService.getMemberships(req.query)
+    const membershipData = await membershipService.getMemberships(req.query, req.user)
     res.json(membershipData)
 }
 

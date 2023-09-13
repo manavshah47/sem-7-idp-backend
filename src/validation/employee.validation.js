@@ -39,7 +39,12 @@ const approveMembershipValidationSchema = Joi.object({
     memberPhone: phone
 })
 
+const phoneValidationSchema = Joi.object({
+    phone
+})
+
 module.exports = {
     createEmployeeValidationSchema,
-    approveMembershipValidationSchema
+    approveMembershipValidationSchema,
+    phoneValidationSchema
 }

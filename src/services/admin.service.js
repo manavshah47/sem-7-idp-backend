@@ -1,5 +1,5 @@
 // user model import
-const { User, Employee } = require("../models")
+const { User, Employee, Membership } = require("../models")
 const Joi = require("joi")
 const { employeeValidation } = require("../validation")
 
@@ -99,28 +99,39 @@ const showUsers = async (query) => {
 const deleteUser = async (params) => {
     try{
         // fetch user id from param
-        const { id } = params;
+        const { phone } = params;
+
+        console.log("PHONE: ", phone)
 
         // joi input validation
-        const { error } = userValidation.emailValidationSchema.validate({id})
+        const { error } = employeeValidation.phoneValidationSchema.validate({phone})
         
         // return error if input validation fails
         if(error) {
-            return {success:false, message:"Input validation failed", data:error.message}
+            return {success:false, message:"Enter valid phone number", data:error.message}
         }
 
         // find user and delete
-        const user = await User.findOneAndDelete({id});
+        const user = await Employee.findOneAndDelete({phone})
 
         // if no user is there, means user does not exists
         if(!user){
-            return {sucess:false, message: "No user with given id"}
+            return {sucess:false, message: "No employee with given id"}
         }
 
+        const approverAssignedMemberships = await Membership.find({'approver.phone':user.phone})
+
+        // assigning pending memberships of deleting approver to other approvers
+        approverAssignedMemberships.forEach(async (membership) => {
+            const approver = await Employee.findOneAndUpdate({"typeOfUser":"approver"}, {sort: {totalMemberships: -1}}, {$inc:{totalMemberships:1}})
+            membership.membershipStatus = "pending"
+            membership.approver.phone = approver.phone
+            membership.save()
+        })
+
         // return response
-        return {success:true, message:"User deleted successfully", data: user}
+        return {success:true, message:"Employee deleted successfully"}
     } catch (error) {
-        
         return {sucess:false,message:"Internal server error", data: error.message}
     }
 }

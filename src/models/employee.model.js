@@ -41,7 +41,12 @@ const employeeSchema = new mongoose.Schema({
         required: true
     },
 
-    pendingMemberships: {
+    totalMemberships: {
+        type: Number,
+        default: 0
+    },
+
+    completedMemberships: {
         type: Number,
         default: 0
     }

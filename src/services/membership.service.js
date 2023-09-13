@@ -238,8 +238,7 @@ const applyForMembership = async (user) => {
             return { success: false, message:"You have already applied for membership."}
         }
 
-        const approver = await Employee.findOneAndUpdate({"typeOfUser":"approver"}, {$inc:{pendingMemberships:1}},{sort: {pendigMemberships: -1}})
-        console.log("approver: ", approver)
+        const approver = await Employee.findOneAndUpdate({"typeOfUser":"approver"}, {$inc:{totalMemberships:1}},{sort: {totalMemberships: -1}})
         
         membershipData.membershipStatus = "pending"
         membershipData.approver.phone = approver.phone
@@ -274,9 +273,10 @@ const memberInfo = async (body, user) => {
 }
 
 // pagination of membership data
-const getMemberships = async (query) => {
+const getMemberships = async (query, user) => {
     try {
-        let { page, limit } = query;
+        const { typeOfUser, phone } = user
+        let { page, limit, type } = query;
 
         // if page is not there in query of page is < 0 then set page as 1
         if(!page || page <= 0){
@@ -289,7 +289,38 @@ const getMemberships = async (query) => {
         }
 
         // count total number of documents for perticular type of user
-        const totalMembershipCount = await Membership.countDocuments({});
+        let totalMembershipCount = 0
+        
+        if(type == "all") {
+            if(typeOfUser == "approver") {
+                totalMembershipCount = await Membership.countDocuments({'approver.phone':phone});
+            } else if(typeOfUser == "admin") {
+                totalMembershipCount = await Membership.countDocuments({});
+            }
+        } else if(type == "pending") {
+            if(typeOfUser == "approver"){
+                totalMembershipCount = await Membership.countDocuments({'approver.phone': phone, 'membershipStatus': 'pending'});
+            } else if(typeOfUser == "admin") {
+                totalMembershipCount = await Membership.countDocuments({'membershipStatus': 'pending'});
+            } else {
+                return { success:false, message: "You are not allowed to view pending memberships" }
+            }
+        } else if (type == "completed") {
+            if(typeOfUser == "approver"){
+                totalMembershipCount = await Membership.countDocuments({'approver.phone': phone, 'membershipStatus': {$in : ['approved', 'rejected']}});
+            } else if(typeOfUser == "admin") {
+                totalMembershipCount = await Membership.countDocuments({'membershipStatus': {$in : ['approved', 'rejected']}});
+            } else {
+                return { success:false, message: "You are not allowed to view completed memberships" }
+            }
+        } else {
+            return { success:false, message:"Please select proper type."}
+        }
+
+        console.log("TOTAL MEMBERSHIP COUNT: ", totalMembershipCount)
+        console.log("TYPE: ", type)
+        console.log("USER: ", user)
+
 
         // count last page for pagination
         const lastPage = Math.ceil(totalMembershipCount / limit)
@@ -300,7 +331,27 @@ const getMemberships = async (query) => {
         }
 
         // find users as par pagination requirment
-        const memberships = await Membership.find({}).sort({'updatedAt':-1,'createdAt':-1}).select({ __v: 0, password:0 }).limit(limit * 1).skip((page - 1) * limit).exec()
+        let memberships =  []
+        
+        if(type == "all"){
+            if(typeOfUser == "approver"){
+                memberships = await Membership.find({'approver.phone':phone}).sort({'updatedAt':-1,'createdAt':-1}).select({ __v: 0, password:0 }).limit(limit * 1).skip((page - 1) * limit).exec()
+            } else if( typeOfUser == "admin"){
+                memberships = await Membership.find({}).sort({'updatedAt':-1,'createdAt':-1}).select({ __v: 0, password:0 }).limit(limit * 1).skip((page - 1) * limit).exec()
+            }
+        } else if (type == "pending") {
+            if(user.typeOfUser == "approver"){
+                memberships = await Membership.find({'approver.phone': user.phone, 'membershipStatus': 'pending'}).sort({'updatedAt':-1,'createdAt':-1}).select({ __v: 0, password:0 }).limit(limit * 1).skip((page - 1) * limit).exec()
+            } else if (user.typeOfUser == "admin") {
+                memberships = await Membership.find({'membershipStatus': 'pending'}).sort({'updatedAt':-1,'createdAt':-1}).select({ __v: 0, password:0 }).limit(limit * 1).skip((page - 1) * limit).exec()
+            }
+        } else if(type == "completed") {
+            if(user.typeOfUser == "approver"){
+                memberships = await Membership.find({'approver.phone': user.phone, 'membershipStatus': {$in : ['approved', 'rejected']}}).sort({'updatedAt':-1,'createdAt':-1}).select({ __v: 0, password:0 }).limit(limit * 1).skip((page - 1) * limit).exec()
+            } else if (user.typeOfUser == "admin") {
+                memberships = await Membership.find({'membershipStatus': {$in : ['approved', 'rejected']}}).sort({'updatedAt':-1,'createdAt':-1}).select({ __v: 0, password:0 }).limit(limit * 1).skip((page - 1) * limit).exec()
+            }
+        }
         
         // return users data
         return {success:true, message:`All Memberships`, data: {memberships: memberships, totalPages: lastPage, totalDocuments: totalMembershipCount, currentPage: page}}

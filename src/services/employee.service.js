@@ -1,4 +1,5 @@
-const {Membership} = require("../models")
+const {Membership, Employee } = require("../models")
+const { Member } = require("../models/member.model")
 const { employeeValidation } = require("../validation")
 
 const approveMembership = async (body, user) => {
@@ -7,7 +8,6 @@ const approveMembership = async (body, user) => {
 
         const { message, membershipStatus, memberPhone } = body
 
-        // joi input validation
          // joi input validation
          const { error } = employeeValidation.approveMembershipValidationSchema.validate({...body})
 
@@ -33,6 +33,17 @@ const approveMembership = async (body, user) => {
             membershipData.approver.message = message
             membershipData.membershipStatus = membershipStatus
             membershipData.save()
+
+            if(membershipStatus == "approved" || membershipStatus == "rejected"){
+                // update completed membership in employee collection
+                await Employee.findOneAndUpdate({phone}, {$inc : {completedMemberships : 1}})
+            }
+
+            if(membershipStatus == "approved"){
+                // make member as approved in member collection
+                await Member.findOneAndUpdate({'phone':membershipData.member.phone}, {isApproved: true})
+            }
+
             return {success:true, message:`Membership ${membershipStatus} successfully`}
         }
 

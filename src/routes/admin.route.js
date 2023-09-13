@@ -28,7 +28,7 @@ router.post("/create-user", ensureAdmin, adminController.createUser)
 router.get("/show-users", ensureAdmin, adminController.showUsers)
 
 // 7. delete user route
-router.delete("/delete-user/:id", ensureAdmin, adminController.deleteUser)
+router.delete("/delete-user/:phone", ensureAdmin, adminController.deleteUser)
 
 // 8. update user route
 router.put("/update-user", ensureAdmin, adminController.updateUser)
