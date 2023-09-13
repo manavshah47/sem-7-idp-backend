@@ -33,6 +33,11 @@ const memberSchema = new mongoose.Schema({
     typeOfUser: {
         type: String,
         default: "member"
+    },
+
+    isApproved: {
+        type: Boolean,
+        default: false
     }
 });
 

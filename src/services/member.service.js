@@ -1,5 +1,5 @@
 const { Otp, Email, Employee } = require("../models");
-const { transporter, membershipIdGenerator } = require("../util");
+const { transporter, membershipIdGenerator } = require("../utils");
 
 const { Member } = require("../models/member.model")
 

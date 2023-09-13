@@ -17,3 +17,7 @@ module.exports.chatController = require("./chat.controller")
 
 // auth controller export
 module.exports.authController = require("./auth.controller")
+
+module.exports.messageController = require("./message.controller")
+
+module.exports.chatController = require("./chat.controller")

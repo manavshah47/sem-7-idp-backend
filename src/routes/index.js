@@ -20,6 +20,8 @@ const chatRoute = require("./chat.route")
 // import auth routes
 const authRoute = require("./auth.route")
 
+const messageRoute = require("./message.route")
+
 // use /admin for admin routes
 router.use("/admin", adminRoute)
 
@@ -37,5 +39,7 @@ router.use("/chat", chatRoute)
 
 // use /auth for auth routes
 router.use("/auth", authRoute)
+
+router.use("/chat", messageRoute)
 
 module.exports = router

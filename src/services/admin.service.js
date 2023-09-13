@@ -75,7 +75,7 @@ const showUsers = async (query) => {
         }
 
         // count total number of documents for perticular type of user
-        const totalUsersCount = await User.countDocuments({});
+        const totalUsersCount = await Employee.countDocuments({});
 
         // count last page for pagination
         const lastPage = Math.ceil(totalUsersCount / limit)
@@ -86,10 +86,10 @@ const showUsers = async (query) => {
         }
 
         // find users as par pagination requirment
-        const users = await User.find({}).sort({'updatedAt':-1,'createdAt':-1}).select({ __v: 0, password:0 }).limit(limit * 1).skip((page - 1) * limit).exec()
+        const employeeData = await Employee.find({}).sort({'updatedAt':-1,'createdAt':-1}).select({ __v: 0, password:0 }).limit(limit * 1).skip((page - 1) * limit).exec()
         
         // return users data
-        return {success:true, message:`All Users`, data: {users: users, totalPages: lastPage, totalDocuments: totalUsersCount, currentPage: page}}
+        return {success:true, message:`All Employees`, data: {employee: employeeData, totalPages: lastPage, totalDocuments: totalUsersCount, currentPage: page}}
     } catch (error) {
         return {sucess:false,message:"Internal server error", data: error.message}
     }
