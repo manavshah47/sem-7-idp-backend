@@ -289,27 +289,41 @@ const getMemberships = async (query, user) => {
         }
 
         // count total number of documents for perticular type of user
-        let totalMembershipCount = 0
+        let totalMembershipCount = -1
         
+        console.log("type: ", type)
+
         if(type == "all") {
             if(typeOfUser == "approver") {
-                totalMembershipCount = await Membership.countDocuments({'approver.phone':phone});
+                totalMembershipCount = await Membership.countDocuments({'approver.phone':phone})
             } else if(typeOfUser == "admin") {
-                totalMembershipCount = await Membership.countDocuments({});
+                totalMembershipCount = await Membership.countDocuments({})
             }
         } else if(type == "pending") {
             if(typeOfUser == "approver"){
                 totalMembershipCount = await Membership.countDocuments({'approver.phone': phone, 'membershipStatus': 'pending'});
+                if(totalMembershipCount == 0){
+                    return { success: false, message:"There is no pending membership for given approver", data: {memberships: [], totalPages: 0, totalDocuments: 0, currentPage: 1} }
+                }
             } else if(typeOfUser == "admin") {
                 totalMembershipCount = await Membership.countDocuments({'membershipStatus': 'pending'});
+                if(totalMembershipCount == 0){
+                    return { success: false, message:"There is no pending membership", data: {memberships: [], totalPages: 0, totalDocuments: 0, currentPage: 1} }
+                }
             } else {
                 return { success:false, message: "You are not allowed to view pending memberships" }
             }
         } else if (type == "completed") {
             if(typeOfUser == "approver"){
                 totalMembershipCount = await Membership.countDocuments({'approver.phone': phone, 'membershipStatus': {$in : ['approved', 'rejected']}});
+                if(totalMembershipCount == 0) {
+                    return { success: false, message:"There is no completed membership for given approver", data: {memberships: [], totalPages: 0, totalDocuments: 0, currentPage: 1}}
+                }
             } else if(typeOfUser == "admin") {
                 totalMembershipCount = await Membership.countDocuments({'membershipStatus': {$in : ['approved', 'rejected']}});
+                if(totalMembershipCount == 0) {
+                    return { success: false, message:"There is no completed membership", data: {memberships: [], totalPages: 0, totalDocuments: 0, currentPage: 1}}
+                }
             } else {
                 return { success:false, message: "You are not allowed to view completed memberships" }
             }
@@ -321,6 +335,10 @@ const getMemberships = async (query, user) => {
         console.log("TYPE: ", type)
         console.log("USER: ", user)
 
+
+        if(totalMembershipCount == -1) {
+            return { success:false, message:"No membership found" }
+        }
 
         // count last page for pagination
         const lastPage = Math.ceil(totalMembershipCount / limit)
@@ -353,6 +371,7 @@ const getMemberships = async (query, user) => {
             }
         }
         
+
         // return users data
         return {success:true, message:`All Memberships`, data: {memberships: memberships, totalPages: lastPage, totalDocuments: totalMembershipCount, currentPage: page}}
     } catch(error){
