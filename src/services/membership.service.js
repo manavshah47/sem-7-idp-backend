@@ -238,8 +238,15 @@ const applyForMembership = async (user) => {
             return { success: false, message:"You have already applied for membership."}
         }
 
-        const approver = await Employee.findOneAndUpdate({"typeOfUser":"approver"}, {$inc:{totalMemberships:1}},{sort: {totalMemberships: -1}})
-        
+        const approver = await Employee.aggregate([
+            { $match : { typeOfUser : "approver" } },
+            { $sort: { totalMemberships: 1 } }, // Sort by age in ascending order
+            { $limit: 1 },        // Take the first document (minimum age)
+            { $set: { totalMemberships: { $add: ['$totalMemberships', 1] } } }, // Increment the age by 1
+        ])
+
+        console.log("approver: ", approver)
+
         membershipData.membershipStatus = "pending"
         membershipData.approver.phone = approver.phone
         membershipData.save()
@@ -290,8 +297,6 @@ const getMemberships = async (query, user) => {
 
         // count total number of documents for perticular type of user
         let totalMembershipCount = -1
-        
-        console.log("type: ", type)
 
         if(type == "all") {
             if(typeOfUser == "approver") {
@@ -330,11 +335,6 @@ const getMemberships = async (query, user) => {
         } else {
             return { success:false, message:"Please select proper type."}
         }
-
-        console.log("TOTAL MEMBERSHIP COUNT: ", totalMembershipCount)
-        console.log("TYPE: ", type)
-        console.log("USER: ", user)
-
 
         if(totalMembershipCount == -1) {
             return { success:false, message:"No membership found" }

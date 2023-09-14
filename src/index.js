@@ -42,7 +42,7 @@ const hostname = "127.0.0.1";
 const port = process.env.PORT || 3001;
 
 // trust netlify reverse proxy
-// app.set("trust proxy", 1);
+app.set("trust proxy", 1);
 
 // cors to access apis from frontend
 
@@ -67,29 +67,29 @@ app.use(
 )
 
 // express-session
-// app.use(
-//   session({
-//     secret: process.env.EXPRESS_SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: false,
-//     proxy: true, // trust reverse proxy of netlify
-//     cookie: {maxAge: 60 * 60 * 1000, secure: true, sameSite:'none' }, // 1 hour, secure for https & sameSite for deployment of backend & frontend on different places
-//     // cookie: {maxAge: 60 * 60 * 1000, secure: true }, // 1 hour, secure for https & sameSite for deployment of backend & frontend on different places
-//     store: new MongoStore({ mongooseConnection: mongoose.connection }), // storing sessions in mongodb
-//   })
-//   )
+app.use(
+  session({
+    secret: process.env.EXPRESS_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    proxy: true, // trust reverse proxy of netlify
+    cookie: {maxAge: 60 * 60 * 1000, secure: true, sameSite:'none' }, // 1 hour, secure for https & sameSite for deployment of backend & frontend on different places
+    // cookie: {maxAge: 60 * 60 * 1000, secure: true }, // 1 hour, secure for https & sameSite for deployment of backend & frontend on different places
+    store: new MongoStore({ mongooseConnection: mongoose.connection }), // storing sessions in mongodb
+  })
+  )
 // express-sessions (admin session)
 
 
-app.use(
-  session({
-    secret: 'cOmPleXsecREtkEy',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {maxAge: 60 * 60 * 1000 }, // 1 hour 
-    store: new MongoStore({ mongooseConnection: mongoose.connection }),
-  })
-)
+// app.use(
+//   session({
+//     secret: 'cOmPleXsecREtkEy',
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {maxAge: 60 * 60 * 1000 }, // 1 hour 
+//     store: new MongoStore({ mongooseConnection: mongoose.connection }),
+//   })
+// )
 
 
 // this will not break session if user performs some activity within 1 hour

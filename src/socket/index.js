@@ -24,6 +24,7 @@ const mountJoinChatEvent = (socket) => {
  */
 const mountParticipantTypingEvent = (socket) => {
   socket.on(ChatEventEnum.TYPING_EVENT, (chatId) => {
+    console.log("participant started typing")
     socket.in(chatId).emit(ChatEventEnum.TYPING_EVENT, chatId);
   });
 };
@@ -34,6 +35,7 @@ const mountParticipantTypingEvent = (socket) => {
  */
 const mountParticipantStoppedTypingEvent = (socket) => {
   socket.on(ChatEventEnum.STOP_TYPING_EVENT, (chatId) => {
+    console.log("participant stopped typing")
     socket.in(chatId).emit(ChatEventEnum.STOP_TYPING_EVENT, chatId);
   });
 };
@@ -45,8 +47,6 @@ const mountParticipantStoppedTypingEvent = (socket) => {
 const initializeSocketIO = (io) => {
   return io.on("connection", async (socket) => {
     try {
-      console.log("socket: ")
-      console.log("socket: ", socket.auth)
       console.log("user: ", socket.handshake.auth.user)
 
       const user = await Member.findOne({phone:socket.handshake.auth.user.phone, isApproved: true});
@@ -63,6 +63,9 @@ const initializeSocketIO = (io) => {
       // so that the client can catch the event and show the notifications.
       socket.join(user._id.toString());
       socket.emit(ChatEventEnum.CONNECTED_EVENT); // emit the connected event so that client is aware
+
+      console.log("event: ", ChatEventEnum.CONNECTED_EVENT)
+
       console.log("User connected 🗼. userId: ", user._id.toString());
 
       // Common events that needs to be mounted on the initialization
