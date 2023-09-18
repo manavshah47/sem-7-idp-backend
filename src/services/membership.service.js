@@ -116,7 +116,7 @@ const companyInfoTwo = async (body, user, file) => {
                 // file updation condition
                 const uploadedImageResponse = await uploadPDFFile(file, registrationProofName)
                 membershipData.companyRegistrationProofAttachment = {
-                    file: uploadedImageResponse.imageURL,
+                    file: uploadedImageResponse,
                     documentName: membershipData.companyRegistrationProofAttachment.documentName
                 }
             }
@@ -131,7 +131,7 @@ const companyInfoTwo = async (body, user, file) => {
         const updatedMembershipData = {
             companyType, companyRegistrationYear:registrationYear, panNumber, cinNumber, gstNumber,
             companyRegistrationProofAttachment: {
-                file: uploadedImageResponse.imageURL,
+                file: uploadedImageResponse,
                 documentName: registrationProofName
             },
             membershipFormStatus:"company-info-2"
@@ -184,7 +184,7 @@ const companyInfoThree = async (body, user, file) => {
             if(file){
                 // initial data addition conditon
                 const uploadedImageResponse = await uploadPDFFile(file, "turnover-balance-sheet")
-                membershipData.turnOverBalanceSheet = uploadedImageResponse.imageURL
+                membershipData.turnOverBalanceSheet = uploadedImageResponse
             }
 
             membershipData.save()
@@ -201,7 +201,7 @@ const companyInfoThree = async (body, user, file) => {
             companyTurnOverRange, 
             companyProducts: JSON.parse(companyProducts), 
             companyERDARequiredServices: JSON.parse(companyERDARequiredServices),
-            turnOverBalanceSheet: uploadedImageResponse.imageURL,
+            turnOverBalanceSheet: uploadedImageResponse,
             membershipFormStatus:"company-info-3",
         }
         // this will be done when user verifies info added.

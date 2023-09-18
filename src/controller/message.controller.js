@@ -6,7 +6,7 @@ const getAllMessages = async (req, res) => {
 }
 
 const sendMessage = async (req, res) => {
-    const sendMessageResponse = await messageService.sendMessage(req.params, req.body, req.user, req)
+    const sendMessageResponse = await messageService.sendMessage(req.params, req.body, req.user, req.files, req)
     res.json(sendMessageResponse)
 }
 

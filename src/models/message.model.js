@@ -10,14 +10,13 @@ const chatMessageSchema = new mongoose.Schema(
     content: {
       type: String,
     },
-    attachments: {
-      type: [
-        {
-          url: String,
-          localPath: String,
-        },
-      ],
-      default: [],
+    attachment: {
+      type: {
+        type: String,
+      },
+      url : {
+        type: String
+      }
     },
     chat: {
       type: mongoose.Schema.Types.ObjectId,

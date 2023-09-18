@@ -73,7 +73,7 @@ const uploadPDFFile = async (file, folder) => {
     await s3Client.send(new PutObjectCommand(uploadParams)); 
 
     // return file key (fike key is stored in database)
-    return {success: true, imageURL: finalFileKey}
+    return finalFileKey
 }
 
 const getImageSignedUrl = async (imgURL) => {
@@ -94,7 +94,7 @@ const getImageSignedUrl = async (imgURL) => {
 // actual implementation of get url of uploaded file in s3
 const uploadImageFile = async (files, folder) => {
     const fileName = crypto.randomBytes(16).toString('hex') // generating random file name
-    const fileContent = Buffer.from(files.image.data, 'binary') // creating buffer from actual file
+    const fileContent = Buffer.from(files.file.data, 'binary') // creating buffer from actual file
 
     // all campaign images will be stored inside campaign folder in s3
     let finalFileKey = `${folder}/${fileName}`;

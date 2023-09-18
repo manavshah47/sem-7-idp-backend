@@ -1,7 +1,11 @@
 const mongoose = require("mongoose")
 const { Chat, Message } = require("../models")
 const { emitSocketEvent } = require("../socket/index.js");
-const { ChatEventEnum } = require("../constants")
+const { ChatEventEnum } = require("../constants");
+const { uploadPDFFile, uploadImageFile, getPDFSignedURL, getImageSignedUrl } = require("./image.service");
+
+// bluebird promise - used for asynchronous promise handling while uploading multiple files in s3 at same time
+const Promise = require('bluebird')
 
 
 /**
@@ -65,18 +69,33 @@ const getAllMessages = async (params, user) => {
         ...chatMessageCommonAggregation(),
     ]);
 
+    await Promise.map(messages, async (message, index) => {
+        if(message.attachment){
+            let attachmentURL = ""
+            if (message.attachment.type == "pdf") {
+                attachmentURL = await getPDFSignedURL(message.attachment.url)
+            } else if(message.attachment.type == "image"){
+                attachmentURL = await getImageSignedUrl(message.attachment.url)
+            }
+            messages[index].attachment.url = attachmentURL
+        }
+        return 
+    }, {concurrency: 4})
+
     return { success: true, message: "Messages fetched successfully", messages }
     } catch (error) {
         return { success:false, message: "Internal server error", data: error.message }
     }
 };
 
-const sendMessage = async (params, body, user, req) => {
+const sendMessage = async (params, body, user, files, req) => {
     try {
     const { chatId } = params;
     const { content } = body;
 
-    if (!content) {
+    console.log("FILES: ", files)
+
+    if (!content && !files) {
         return { success: false, message: "Message content is required" }
     }
 
@@ -86,11 +105,30 @@ const sendMessage = async (params, body, user, req) => {
         return { success: false, message: "Chat does not exists" }
     }
 
+    let attachment = {}
+
+    if(files) {
+        if(files.file.mimetype == "application/pdf"){
+            let temp = await uploadPDFFile(files, "chat")
+            attachment = {
+                url : temp,
+                type: "pdf"
+            }
+        } else {
+            let temp = await uploadImageFile(files, "chat")
+            attachment = {
+                url : temp,
+                type: "image"
+            }
+        }
+    }
+
     // Create a new message instance with appropriate metadata
     const message = await Message.create({
         sender: new mongoose.Types.ObjectId(user._id),
         content: content || "",
-        chat: new mongoose.Types.ObjectId(chatId)
+        chat: new mongoose.Types.ObjectId(chatId),
+        attachment
     });
 
     // update the chat's last message which could be utilized to show last message in the list item
@@ -116,6 +154,16 @@ const sendMessage = async (params, body, user, req) => {
 
     // Store the aggregation result
     const receivedMessage = messages[0];
+
+
+    // if message is having a attachment then send signed url of attachent with response
+    if(receivedMessage.attachment) {
+        if(receivedMessage.attachment.type == "image") {
+            receivedMessage.attachment.url = await getImageSignedUrl(receivedMessage.attachment.url)
+        } else if (receivedMessage.attachment.type == "pdf") {
+            receivedMessage.attachment.url = await getPDFSignedURL(receivedMessage.attachment.url)
+        }
+    }
 
     if (!receivedMessage) {
         return { success:false, message: "Internal server error" }
