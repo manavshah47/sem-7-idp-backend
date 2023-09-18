@@ -3,6 +3,8 @@ const { transporter, membershipIdGenerator } = require("../utils");
 
 const { Member } = require("../models/member.model")
 
+const { getImageSignedUrl, uploadImageFile } = require("./image.service")
+
 // send otp service
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -120,6 +122,38 @@ const showUserData = async (user) => {
     }
 }
 
+const uploadProfileImage = async (user, files) => {
+    try {
+        let userData;
+        if(user.typeOfUser == "member") {
+            userData = await Member.findOne({phone:user.phone})
+        } else if(user.typeOfUser == "approver" || user.typeOfUser == "magazine-manager") {
+            userData = await Employee.findOne({phone:user.phone})
+        } else {
+            return { success:false, message: "You are not allowed to update profile" }
+        }
+
+        const uploadedProfileURL = await uploadImageFile(files, "profile")
+        
+        userData.profileImage = uploadedProfileURL
+        await userData.save()
+
+        return { success:true, message: "Image uploaded successfully" }
+
+    } catch (error) {
+        return { success:false, message:error.message }
+    }
+} 
+
+const getProfileImage = async (body) => {
+    try {
+        const { url } = body
+        const image = await getImageSignedUrl(url)
+        return { success: true, url:image }
+    } catch (error) {
+        return { success:false, message: "Profile image not found" , data: error }
+    }
+}
 
 module.exports = {
     login,
@@ -127,5 +161,7 @@ module.exports = {
     sendOtp,
     checkPhoneExist,
     checkEmailExist,
-    showUserData
+    showUserData,
+    uploadProfileImage,
+    getProfileImage
 }

@@ -11,7 +11,7 @@ const { getSignedUrl } = require("@aws-sdk/s3-request-presigner")
 const crypto = require("crypto")
 
 // function to get signed url from image location
-const getObjectSignedUrl = async (attachmentURL) => {
+const getPDFSignedURL = async (attachmentURL) => {
     // set bucket name and image location
     const params = {
         Bucket: process.env.AWS_BUCKET_NAME,
@@ -37,7 +37,7 @@ const getObjectSignedUrl = async (attachmentURL) => {
 // actual implementation of upload file in s3
 // file is actual file that is going to upload
 // folder is folder in which file is going to uplaod (used to store files in diffrent folders such as creator, finance, legal)
-const uploadFile = async (file, folder) => {
+const uploadPDFFile = async (file, folder) => {
     // image validation (size and type)
     // const imageType = file.mimetype;
     // const imageSize = file.size;
@@ -76,7 +76,45 @@ const uploadFile = async (file, folder) => {
     return {success: true, imageURL: finalFileKey}
 }
 
+const getImageSignedUrl = async (imgURL) => {
+    const params = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: imgURL
+    }
+
+
+    
+    // https://aws.amazon.com/blogs/developer/generate-presigned-url-modular-aws-sdk-javascript/
+    const command = new GetObjectCommand(params);
+    const seconds = 3600
+    const url = await getSignedUrl(s3Client, command, { expiresIn: seconds });
+    return url
+}
+
+// actual implementation of get url of uploaded file in s3
+const uploadImageFile = async (files, folder) => {
+    const fileName = crypto.randomBytes(16).toString('hex') // generating random file name
+    const fileContent = Buffer.from(files.image.data, 'binary') // creating buffer from actual file
+
+    // all campaign images will be stored inside campaign folder in s3
+    let finalFileKey = `${folder}/${fileName}`;
+
+    const uploadParams = {
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Body: fileContent,
+        Key: finalFileKey,
+        // ContentType: 'image/jpeg'
+    }
+
+    await s3Client.send(new PutObjectCommand(uploadParams)); // uploading of resume will be done here
+    // const url = await getObjectSignedUrl(finalFileKey) // url of uploaded resume will send in response
+    return finalFileKey
+}
+
+
 module.exports = {
-    getObjectSignedUrl,
-    uploadFile
+    getPDFSignedURL,
+    uploadPDFFile,
+    getImageSignedUrl,
+    uploadImageFile
 }

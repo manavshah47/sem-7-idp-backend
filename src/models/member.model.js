@@ -38,6 +38,11 @@ const memberSchema = new mongoose.Schema({
     isApproved: {
         type: Boolean,
         default: false
+    },
+
+    profileImage: {
+        type: String,
+        default: "images/dp.jpg"
     }
 });
 

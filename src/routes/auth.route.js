@@ -26,4 +26,8 @@ router.get("/check-email/:email",authController.checkEmailExist)
 
 router.get("/show-current-user", ensureAuthenticated, authController.showUserData)
 
+router.post("/update-profile-image", ensureAuthenticated, authController.uploadProfileImage)
+
+router.post("/get-profile-image", ensureAuthenticated, authController.getProfileImage)
+
 module.exports = router

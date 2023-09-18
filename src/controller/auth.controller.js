@@ -33,11 +33,24 @@ const showUserData = async (req, res) => {
     res.json(userDataResponse)
 }
 
+const uploadProfileImage = async ( req, res ) => {
+    const uploadedImageResponse = await authService.uploadProfileImage(req.user, req.files)
+    res.json(uploadedImageResponse)
+}
+
+const getProfileImage = async ( req, res ) => {
+    const imageURLResponse = await authService.getProfileImage(req.body)
+    res.json(imageURLResponse)
+}
+
+
 module.exports = {
     login,
     logout,
     sendOtp,
     checkPhoneExist,
     checkEmailExist,
-    showUserData
+    showUserData,
+    uploadProfileImage,
+    getProfileImage
 }

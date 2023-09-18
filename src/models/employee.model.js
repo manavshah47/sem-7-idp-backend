@@ -49,6 +49,11 @@ const employeeSchema = new mongoose.Schema({
     completedMemberships: {
         type: Number,
         default: 0
+    },
+
+    profileImage: {
+        type: String,
+        default: "images/dp.jpg"
     }
 });
 

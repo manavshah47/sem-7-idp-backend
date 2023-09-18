@@ -1,4 +1,4 @@
-const { Otp, Email, Employee } = require("../models");
+const { Email } = require("../models");
 const { transporter, membershipIdGenerator } = require("../utils");
 
 const { Member } = require("../models/member.model")

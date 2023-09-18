@@ -625,6 +625,11 @@ const getAllChats = async (user) => {
             ...chatCommonAggregation(),
         ]);
 
+        console.log("chats: ", chats)
+        // start from here
+        // chats.forEach((chat) => {
+        // })
+
         return { success: true, message: "User chats fetched successfully", chats }
     } catch (error) {
         return { success: false, message: "Internal server error" }

@@ -5,7 +5,7 @@ const { Membership, Employee } = require("../models");
 const { membershipValidation } = require("../validation");
 
 // image related services import
-const { uploadFile, getObjectSignedUrl } = require("./image.service")
+const { uploadPDFFile, getPDFSignedURL } = require("./image.service")
 
 // POST API - company-info-1
 const companyBasicInfo = async (body, user) => {
@@ -114,7 +114,7 @@ const companyInfoTwo = async (body, user, file) => {
             if(file){
                 // todo: IT IS NECESSARY TO FIRST DELETE THE PREVIOUS FILE
                 // file updation condition
-                const uploadedImageResponse = await uploadFile(file, registrationProofName)
+                const uploadedImageResponse = await uploadPDFFile(file, registrationProofName)
                 membershipData.companyRegistrationProofAttachment = {
                     file: uploadedImageResponse.imageURL,
                     documentName: membershipData.companyRegistrationProofAttachment.documentName
@@ -126,7 +126,7 @@ const companyInfoTwo = async (body, user, file) => {
         }
 
         // first time insertion of data condition
-        const uploadedImageResponse = await uploadFile(file, registrationProofName)
+        const uploadedImageResponse = await uploadPDFFile(file, registrationProofName)
 
         const updatedMembershipData = {
             companyType, companyRegistrationYear:registrationYear, panNumber, cinNumber, gstNumber,
@@ -183,7 +183,7 @@ const companyInfoThree = async (body, user, file) => {
 
             if(file){
                 // initial data addition conditon
-                const uploadedImageResponse = await uploadFile(file, "turnover-balance-sheet")
+                const uploadedImageResponse = await uploadPDFFile(file, "turnover-balance-sheet")
                 membershipData.turnOverBalanceSheet = uploadedImageResponse.imageURL
             }
 
@@ -192,7 +192,7 @@ const companyInfoThree = async (body, user, file) => {
         }
         
         // initial data addition conditon
-        const uploadedImageResponse = await uploadFile(file, "turnover-balance-sheet")
+        const uploadedImageResponse = await uploadPDFFile(file, "turnover-balance-sheet")
         
         const updatedMembershipData = {
             // companyResearchArea, 
@@ -393,12 +393,12 @@ const getMemberShipData = async (params) => {
 
 
         if(membershipStatus == "company-info-2" || membershipStatus == "company-info-3" || membershipStatus == "member-info"){
-            let pdfURL = await getObjectSignedUrl(membershipData.companyRegistrationProofAttachment.file)
+            let pdfURL = await getPDFSignedURL(membershipData.companyRegistrationProofAttachment.file)
             membershipData.companyRegistrationProofAttachment.file = pdfURL
         }
       
         if(membershipStatus == "company-info-3" || membershipStatus == "member-info"){
-            let pdfURL = await getObjectSignedUrl(membershipData.turnOverBalanceSheet)
+            let pdfURL = await getPDFSignedURL(membershipData.turnOverBalanceSheet)
             membershipData.turnOverBalanceSheet = pdfURL
         }
 
