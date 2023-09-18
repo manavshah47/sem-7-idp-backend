@@ -3,7 +3,10 @@ const { Chat, Message } = require("../models")
 const { Member } = require("../models/member.model")
 const { emitSocketEvent } = require("../socket/index.js");
 const { ChatEventEnum } = require("../constants")
+const { getImageSignedUrl } = require("./image.service")
 
+// bluebird promise - used for asynchronous promise handling while uploading multiple files in s3 at same time
+const Promise = require('bluebird')
 
 /**
  * @description Utility function which returns the pipeline stages to structure the chat schema with common lookups
@@ -625,10 +628,17 @@ const getAllChats = async (user) => {
             ...chatCommonAggregation(),
         ]);
 
-        console.log("chats: ", chats)
-        // start from here
-        // chats.forEach((chat) => {
-        // })
+        await Promise.map(chats, async (chat, index) => {
+            await Promise.map(chat.participants , async (participant, i) => {
+                if(participant._id != user._id){
+                    if(participant.profileImage != "images/dp.jpg"){
+                        const profileImage = await getImageSignedUrl(participant.profileImage)
+                        chats[index].participants[i].profileImage = profileImage
+                    }
+                }
+            })
+            return 
+        }, {concurrency: 4})
 
         return { success: true, message: "User chats fetched successfully", chats }
     } catch (error) {
