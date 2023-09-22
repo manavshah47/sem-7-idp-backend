@@ -238,18 +238,23 @@ const applyForMembership = async (user) => {
             return { success: false, message:"You have already applied for membership."}
         }
 
-        const approver = await Employee.aggregate([
-            { $match : { typeOfUser : "approver" } },
-            { $sort: { totalMemberships: 1 } }, // Sort by age in ascending order
-            { $limit: 1 },        // Take the first document (minimum age)
-            { $set: { totalMemberships: { $add: ['$totalMemberships', 1] } } }, // Increment the age by 1
-        ])
+        // const approver = await Employee.aggregate([
+        //     { $match : { typeOfUser : "approver" } },
+        //     { $sort: { totalMemberships: 1 } }, // Sort by age in ascending order
+        //     { $limit: 1 },        // Take the first document (minimum age)
+        //     { $set: { totalMemberships: { $add: ['$totalMemberships', 1] } } }, // Increment the age by 1
+        // ])
+
+        const approver = await Employee.findOne({typeOfUser:"approver"}, {$sort: {totalMemberships: 1}})
 
         console.log("approver: ", approver)
 
         membershipData.membershipStatus = "pending"
         membershipData.approver.phone = approver.phone
-        membershipData.save()
+        await membershipData.save()
+
+        approver.totalMemberships = approver.totalMemberships + 1
+        await approver.save()
 
         return { success:true, message:"Membership form submitted successfully"}
     } catch (error) {
