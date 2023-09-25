@@ -245,7 +245,8 @@ const applyForMembership = async (user) => {
         //     { $set: { totalMemberships: { $add: ['$totalMemberships', 1] } } }, // Increment the age by 1
         // ])
 
-        const approver = await Employee.findOne({typeOfUser:"approver"}, {$sort: {totalMemberships: 1}})
+        console.log("Here")
+        const approver = await Employee.findOne({typeOfUser:"approver"}).sort({totalMemberships:1})
 
         console.log("approver: ", approver)
 

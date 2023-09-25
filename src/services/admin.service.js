@@ -123,7 +123,7 @@ const deleteUser = async (params) => {
 
         // assigning pending memberships of deleting approver to other approvers
         approverAssignedMemberships.forEach(async (membership) => {
-            const approver = await Employee.findOne({"typeOfUser":"approver"}, {sort: {totalMemberships: 1}})
+            const approver = await Employee.findOne({typeOfUser:"approver"}).sort({totalMemberships:1})
 
             membership.membershipStatus = "pending"
             membership.approver.phone = approver.phone
