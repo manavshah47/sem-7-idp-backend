@@ -10,6 +10,8 @@ const { getSignedUrl } = require("@aws-sdk/s3-request-presigner")
 // crypto for random string generation
 const crypto = require("crypto")
 
+const sharp = require("sharp")
+
 // function to get signed url from image location
 const getPDFSignedURL = async (attachmentURL) => {
     // set bucket name and image location
@@ -52,7 +54,7 @@ const uploadPDFFile = async (file, folder) => {
 
     // generate file name using crypto
     const fileName = crypto.randomBytes(16).toString('hex') // generating random file name
-    
+
     // create binary buffer from the file
     const fileContent = Buffer.from(file.file.data, 'binary') // creating buffer from actual file
     
@@ -94,20 +96,29 @@ const getImageSignedUrl = async (imgURL) => {
 // actual implementation of get url of uploaded file in s3
 const uploadImageFile = async (files, folder) => {
     const fileName = crypto.randomBytes(16).toString('hex') // generating random file name
-    const fileContent = Buffer.from(files.file.data, 'binary') // creating buffer from actual file
+    // const fileContent = Buffer.from(files.file.data, 'binary') // creating buffer from actual file
+
+    
+    const fileContent2 = await sharp(files.file.data)
+        .resize({
+          width: 365,
+          height: 365
+        })
+    .jpeg({quality:80})
+    .toBuffer();
+
+    console.log("FILE 2: ", fileContent2)
 
     // all campaign images will be stored inside campaign folder in s3
     let finalFileKey = `${folder}/${fileName}`;
 
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
-        Body: fileContent,
-        Key: finalFileKey,
-        // ContentType: 'image/jpeg'
+        Body: fileContent2,
+        Key: finalFileKey
     }
 
     await s3Client.send(new PutObjectCommand(uploadParams)); // uploading of resume will be done here
-    // const url = await getObjectSignedUrl(finalFileKey) // url of uploaded resume will send in response
     return finalFileKey
 }
 
