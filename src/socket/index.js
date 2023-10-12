@@ -97,6 +97,7 @@ const initializeSocketIO = (io) => {
  * @description Utility function responsible to abstract the logic of socket emission via the io instance
  */
 const emitSocketEvent = (req, roomId, event, payload) => {
+  console.log("Payload: ", payload)
   req.app.get("io").in(roomId).emit(event, payload);
 };
 

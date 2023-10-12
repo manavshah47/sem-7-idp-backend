@@ -1,5 +1,6 @@
 // import of models (database schema)
 const { Membership, Employee } = require("../models");
+const { mailUtil } = require("../utils");
 
 // validation schema import
 const { membershipValidation } = require("../validation");
@@ -179,10 +180,8 @@ const companyInfoThree = async (body, user, file) => {
             membershipData.typeOfMembership = typeOfMembership
             membershipData.companyTurnOverRange = companyTurnOverRange
             membershipData.companyProducts = JSON.parse(companyProducts)
-            membershipData.membershipStatus = "pending"
-
+            
             if(file){
-                // initial data addition conditon
                 const uploadedImageResponse = await uploadPDFFile(file, "turnover-balance-sheet")
                 membershipData.turnOverBalanceSheet = uploadedImageResponse
             }
@@ -238,17 +237,22 @@ const applyForMembership = async (user) => {
             return { success: false, message:"You have already applied for membership."}
         }
 
-        // const approver = await Employee.aggregate([
-        //     { $match : { typeOfUser : "approver" } },
-        //     { $sort: { totalMemberships: 1 } }, // Sort by age in ascending order
-        //     { $limit: 1 },        // Take the first document (minimum age)
-        //     { $set: { totalMemberships: { $add: ['$totalMemberships', 1] } } }, // Increment the age by 1
-        // ])
-
-        console.log("Here")
         const approver = await Employee.findOne({typeOfUser:"approver"}).sort({totalMemberships:1})
 
-        console.log("approver: ", approver)
+        let to = approver.email
+        let subject = `Membership request from ${membershipData.companyName}`
+        let messageBody = `\tDear ${approver.name}, \n\tNew Request have been submitted for your review and approval. Your timely action on these requests is crucial to ensure smooth processing. Kindly log into the system and review the pending requests at your earliest convenience.
+
+        \tYour prompt attention to these requests is greatly appreciated.
+        
+        \tThank you for your dedication to this process.
+        
+        Sincerely,
+        TEAM ERDA
+        `
+
+
+        await mailUtil.sendMail(to, subject, messageBody)
 
         membershipData.membershipStatus = "pending"
         membershipData.approver.phone = approver.phone

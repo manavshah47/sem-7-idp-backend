@@ -31,14 +31,32 @@ const ensureApprover = async (req, res, next) => {
             // unauthorized approver
             res.json({success:false, message:"Approver not logged In"})
         }
-
     } else {
         // unauthorized approver
         res.json({success:false, message:"Approver not logged In"})
     }
 }
 
+// middleware to ensure magazine manager is logged In
+const ensureMagazineManager = async (req, res, next) => {
+    if (req.isAuthenticated()) {
+        const userPhone = req.user.phone;
+        const magazineManager = await Employee.findOne({phone:userPhone, typeOfUser:"magazine-manager"})
+        if(magazineManager){
+            // authenticated magazine manager
+            return next();
+        } else {
+            // unauthorized magazine manager
+            res.json({success:false, message:"Approver not logged In"})
+        }
+    } else {
+        // unauthorized magazine manager
+        res.json({success:false, message:"Approver not logged In"})
+    }
+}
+
 module.exports = {
     ensureMember,
-    ensureApprover
+    ensureApprover,
+    ensureMagazineManager
 }

@@ -2,25 +2,15 @@
 const express = require('express')
 const router = express.Router()
 
-// import admin routes
+// individual route files import
 const adminRoute = require("./admin.route")
-
-// import employee routes
 const employeeRoute = require("./employee.route")
-
-// import member routes
 const memberRoute = require("./member.route")
-
-// import membership routes
 const membershipRoute = require("./membership.route")
-
-// import auth routes
 const chatRoute = require("./chat.route")
-
-// import auth routes
 const authRoute = require("./auth.route")
-
 const messageRoute = require("./message.route")
+const magazineRoute = require("./magazine.route")
 
 // use /admin for admin routes
 router.use("/admin", adminRoute)
@@ -40,6 +30,11 @@ router.use("/chat", chatRoute)
 // use /auth for auth routes
 router.use("/auth", authRoute)
 
+// use /chat for chat routes
 router.use("/chat", messageRoute)
+
+// use /magazine for magazine routes
+router.use("/magazine", magazineRoute)
+
 
 module.exports = router

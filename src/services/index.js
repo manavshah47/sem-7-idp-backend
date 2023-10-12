@@ -20,3 +20,5 @@ module.exports.authService = require("./auth.service")
 module.exports.messageService = require("./message.service")
 
 module.exports.chatService = require("./chat.service")
+
+module.exports.magazineService = require("./magazine.service")

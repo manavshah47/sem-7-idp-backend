@@ -1,9 +1,9 @@
 const { Email } = require("../models");
-const { transporter, membershipIdGenerator } = require("../utils");
+const { mailUtil, idGenerator } = require("../utils");
 
 const { Member } = require("../models/member.model")
 
-const { userValidation } = require("../validation")
+const { userValidation } = require("../validation");
 
 const sendEmail = async (body) => {
     try {
@@ -26,7 +26,9 @@ const sendEmail = async (body) => {
         // store new otp in email database
         await Email.create({email, otp})
 
-        let htmlMessage =  (
+        const to = email
+        const title = `ERDA'S MEMBERSHIP MANAGEMENT`
+        const mailBody =  (
             `<body>
                 <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <div class="header" style="background-color: #0f3c69; color: #ffffff; text-align: center; padding: 10px 0; border-top-left-radius: 5px; border-top-right-radius: 5px;">
@@ -43,22 +45,17 @@ const sendEmail = async (body) => {
             </body>`
         )
 
-        // nodemailer package is used here to send data via mail
-        const mail = {
-            from: "manavshah0407@gmail.com",
-            to: email, // receiver email
-            subject: `ERDA'S MEMBERSHIP MANAGEMENT`,
-            // html as main data of the mail
-            html: htmlMessage
-        }
-        transporter.sendMail(mail, (error) => {
-            if (error) {
-                return {response:false,message:"Cannot send email try again later"}
-            } 
-        })
+        const response = await mailUtil.sendMail(to, title, mailBody)
 
-        return {success:true, message: "Message sent successfully"}
+
+        if(response.success) {
+            return {success: true, message:"Mail sent successfully"}
+        }
+
+        return { sucess: false, message: "Error while sending mail"}
+
     } catch (error) {
+        console.log("ERROR: ", error)
         return {sucess:false,message:"Internal server error", data: error.message}
     }
 }
@@ -100,7 +97,7 @@ const createMember = async (body) => {
         const response = await verifyOtp(email, otp)
 
         if(response) {
-            const memberId = await membershipIdGenerator()
+            const memberId = await idGenerator.generateID("member")
     
             const memberData = {
                 firstName,

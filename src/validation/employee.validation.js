@@ -43,8 +43,19 @@ const phoneValidationSchema = Joi.object({
     phone
 })
 
+const uploadMagazineValidationSchema = Joi.object({
+    magazineName:Joi.string().min(2).max(1000).required().messages({'string.empty':'Name cannot be empty', 'string.min':'Name cannot be less than 5 characters','string.max':'Name cannot be more than 1000 characters'}),
+    magazineAuthor: Joi.string().min(2).max(1000).required().messages({'string.empty':'author cannot be empty', 'string.min':'author cannot be less than 5 characters','string.max':'author cannot be more than 1000 characters'}),
+    magazineDescription: Joi.string().min(2).max(1000).required().messages({'string.empty':'description cannot be empty', 'string.min':'description cannot be less than 5 characters','string.max':'description cannot be more than 1000 characters'}),
+    magazinePages:Joi.number().integer().min(0),
+    magazinePrice:Joi.number().integer().min(0),
+    magazineStock:Joi.number().integer().min(0),
+    magazineDate:Joi.date().iso().min('now')
+})
+
 module.exports = {
     createEmployeeValidationSchema,
     approveMembershipValidationSchema,
-    phoneValidationSchema
+    phoneValidationSchema,
+    uploadMagazineValidationSchema
 }

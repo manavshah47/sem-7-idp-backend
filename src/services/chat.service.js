@@ -173,7 +173,7 @@ const createOrGetAOneOnOneChat = async (params, user, req) => {
     }
 
     // logic to emit socket event about the new chat added to the participants
-    payload?.participants?.forEach((participant) => {
+    payload?.participants?.forEach(async (participant, i) => {
         if (participant.phone === user.phone) return; // don't emit the event for the logged in use as he is the one who is initiating the chat
 
         // emit event to other participants with new chat as a payload
