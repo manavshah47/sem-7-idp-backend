@@ -48,7 +48,7 @@ const sendOtp = async (body) => {
             \nYour verification code is ${otp}.
             \nPlease use this code within 10 minutes to complete the process. 
             \nKeep your account safe!`,
-            from: '+17203365916',
+            from: '+12054309201',
             to: `+91${phone}`
         })
 

@@ -180,6 +180,11 @@ const membershipSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+
+    membershipId: {
+        type: String
+    }
+
 });
 
 // create member model from user schema

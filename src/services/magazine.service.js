@@ -15,7 +15,9 @@ const uploadMagazine = async (body, user, file) => {
             return {success:false, message:error.message}
         }
 
-        const { magazineName, magazineDescription, magazineAuthor, magazinePrice, magazinePage, magazineStock, magazineDate } = body;
+        const { magazineName, magazineDescription, magazineAuthor, magazinePrice, magazinePages, magazineStock, magazineDate } = body;
+
+        console.log("page: ", magazinePages)
 
         // upload magazine on s3
         const uploadedMagazineURL = await uploadPDFFile(file, "magazine")
@@ -27,7 +29,7 @@ const uploadMagazine = async (body, user, file) => {
             date: magazineDate,
             price: magazinePrice,
             stock: magazineStock,
-            page:magazinePage,
+            page:magazinePages,
             file: uploadedMagazineURL,
             magazineManager: user.phone
         }
