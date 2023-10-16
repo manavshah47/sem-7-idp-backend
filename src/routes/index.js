@@ -11,6 +11,7 @@ const chatRoute = require("./chat.route")
 const authRoute = require("./auth.route")
 const messageRoute = require("./message.route")
 const magazineRoute = require("./magazine.route")
+const labRoute = require("./lab.route")
 
 // use /admin for admin routes
 router.use("/admin", adminRoute)
@@ -36,5 +37,7 @@ router.use("/chat", messageRoute)
 // use /magazine for magazine routes
 router.use("/magazine", magazineRoute)
 
+// use /lab for lab routes
+router.use("/lab", labRoute)
 
 module.exports = router
