@@ -242,14 +242,17 @@ const applyForMembership = async (user) => {
         let to = approver.email
         let subject = `Membership request from ${membershipData.companyName}`
         let messageBody = `<body>
-                            <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                                <p style="margin: 10px 0;"><strong>Dear ${approver.name},</strong></p>
-                                <p style="margin: 10px 0;">New requests have been submitted for your review and approval. Your timely action on these requests is crucial to ensure smooth processing. Kindly log into the system and review the pending requests at your earliest convenience.</p>
-                                <p style="margin: 10px 0;">Your prompt attention to these requests is greatly appreciated.</p>
-                                <p style="margin: 10px 0;">Thank you for your dedication to this process.</p>
-                                <p style="margin: 10px 0;">Sincerely,<br>TEAM ERDA</p>
-                            </div>
-                        </body>`
+                <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <div class="header" style="background-color: #0f3c69; color: #ffffff; text-align: center; padding: 10px 0; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+                        <h1>Membership request received</h1>
+                    </div>
+                    <h3 style="margin: 10px 0;"><strong>Dear ${approver.name},</strong></h3>
+                    <p style="margin: 10px 0;">New requests have been submitted for your review and approval. Your timely action on these requests is crucial to ensure smooth processing. Kindly log into the system and review the pending requests at your earliest convenience.</p>
+                    <p style="margin: 10px 0;">Your prompt attention to these requests is greatly appreciated.</p>
+                    <p style="margin: 10px 0;">Thank you for your dedication to this process.</p>
+                    <p style="margin: 10px 0;">Sincerely,<br>TEAM ERDA</p>
+                </div>
+            </body>`
 
         // `Dear ${approver.name}, \n\tNew Request have been submitted for your review and approval. Your timely action on these requests is crucial to ensure smooth processing. Kindly log into the system and review the pending requests at your earliest convenience.
 

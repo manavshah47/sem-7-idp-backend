@@ -63,19 +63,20 @@ const approveMembership = async (body, user) => {
             if(membershipStatus == "approved"){
                 subject = "Congratulations! Your Membership Request Has Been Approved"
                 mailBody = `<body>
-                                <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                                <div style="background-color: #0f3c69; color: #fff; text-align: center; padding: 10px 0; border-top-left-radius: 5px; border-top-right-radius: 5px;">
-                                    <h1>Email from ERDA</h1>
+                            <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                <div class="header" style="background-color: #0f3c69; color: #ffffff; text-align: center; padding: 10px 0; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+                                    <h1>Membership approved</h1>
                                 </div>
-                                <p style="margin: 10px 0;"><strong>Dear ${membershipData.member.firstName} ${membershipData.member.lastName},</strong></p>
+                                <h3 style="margin: 10px 0;"><strong>Dear ${membershipData.member.firstName} ${membershipData.member.lastName},</strong></h3>
                                 <p style="margin: 10px 0;">We are delighted to inform you that your membership request for ERDA has been successfully approved! Welcome to our community of members.</p>
                                 <p style="margin: 10px 0;"><strong>Membership ID:</strong> ${membershipId}</p>
                                 <p style="margin: 10px 0;">As an approved member, you now have access to our exclusive features, including the ability to use our chat service, access our magazine, and explore our laboratory resources. We believe these exclusive features will greatly enhance your experience with us.</p>
                                 <p style="margin: 10px 0;">Your commitment to joining our organization is greatly appreciated, and we look forward to your active participation.</p>
                                 <p style="margin: 10px 0;">Once again, congratulations, and thank you for choosing to be a part of our organization.</p>
                                 <p style="margin: 10px 0;">Best regards,<br>Team ERDA</p>
-                                </div>
-                            </body>`
+                            </div>
+                        </body>`
+                
                 // `Dear ${membershipData.member.firstName + " " + membershipData.member.lastName},
                 // We are delighted to inform you that your membership request for ERDA has been successfully approved! Welcome to our community of members.
                 // Membership ID: ${membershipId}
@@ -88,16 +89,19 @@ const approveMembership = async (body, user) => {
             } else if (membershipStatus == "rejected") {
                 subject = "Notice: Membership Request Rejected"
                 mailBody = `<body>
-                                <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                                <h3 style="margin: 10px 0;"><strong>Dear ${membershipData.member.firstName} ${membershipData.member.lastName},</strong></h3>
-                                <p style="margin: 10px 0;">We regret to inform you that your recent membership request at ERDA has been reviewed and, unfortunately, cannot be approved at this time.</p>
-                                <p style="margin: 10px 0;">We appreciate your interest in our organization and encourage you to reevaluate your application in the future or reach out to us if you have any questions or concerns.</p>
-                                <p style="margin: 10px 0;"><strong>Reason for Rejection:</strong> ${message}</p>
-                                <p style="margin: 10px 0;">If you have any questions or require further clarification, please do not hesitate to reach out to our member services team at <a href="mailto:sem7idp@gmail.com">sem7idp@gmail.com</a>. We are here to assist you throughout the process.</p>
-                                <p style="margin: 10px 0;">Thank you for considering us, and we wish you the best in your endeavors.</p>
-                                <p style="margin: 10px 0;">Sincerely,<br>Team ERDA</p>
-                                </div>
-                            </body>`
+                    <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                        <div class="header" style="background-color: #0f3c69; color: #ffffff; text-align: center; padding: 10px 0; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+                            <h1>Membership rejected</h1>
+                        </div>
+                        <h3 style="margin: 10px 0;"><strong>Dear ${membershipData.member.firstName} ${membershipData.member.lastName},</strong></h3>
+                        <p style="margin: 10px 0;">We regret to inform you that your recent membership request at ERDA has been reviewed and, unfortunately, cannot be approved at this time.</p>
+                        <p style="margin: 10px 0;">We appreciate your interest in our organization and encourage you to reevaluate your application in the future or reach out to us if you have any questions or concerns.</p>
+                        <p style="margin: 10px 0;"><strong>Reason for Rejection:</strong> ${message}</p>
+                        <p style="margin: 10px 0;">If you have any questions or require further clarification, please do not hesitate to reach out to our member services team at <a href="mailto:sem7idp@gmail.com">sem7idp@gmail.com</a>. We are here to assist you throughout the process.</p>
+                        <p style="margin: 10px 0;">Thank you for considering us, and we wish you the best in your endeavors.</p>
+                        <p style="margin: 10px 0;">Sincerely,<br>Team ERDA</p>
+                    </div>
+                </body>`
 
                 // `Dear ${membershipData.member.firstName + " " + membershipData.member.lastName},
                 // We regret to inform you that your recent membership request at ERDA has been reviewed and, unfortunately, cannot be approved at this time.
@@ -110,16 +114,20 @@ const approveMembership = async (body, user) => {
             } else if(membershipStatus == "reverted") {
                 subject = "Request for Reverting Membership: Action Required"
                 mailBody = `<body>
-                                <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #fff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                                    <h3 style="margin: 10px 0;"><strong>Dear ${membershipData.member.firstName} ${membershipData.member.lastName},</strong></h3>
-                                    <p style="margin: 10px 0;">We hope this message finds you well. We would like to bring to your attention that, upon review, your membership at ERDA is slated for reversion based on certain criteria.</p>
-                                    <p style="margin: 10px 0;"><strong>Reason for Revert:</strong> ${message}</p>
-                                    <p style="margin: 10px 0;">We encourage you to review your application thoroughly and address the mentioned points to increase the likelihood of a successful approval.</p>
-                                    <p style="margin: 10px 0;">If you have any questions or require further clarification, please do not hesitate to reach out to our member services team at <a href="mailto:sem7idp@gmail.com">sem7idp@gmail.com</a>. We are here to assist you throughout the process.</p>
-                                    <p style="margin: 10px 0;">Thank you for your dedication to becoming a member of [Organization Name], and we look forward to receiving your updated application.</p>
-                                    <p style="margin: 10px 0;">Best regards,<br>Team ERDA</p>
+                            <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                <div class="header" style="background-color: #0f3c69; color: #ffffff; text-align: center; padding: 10px 0; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+                                    <h1>Membership reverted</h1>
                                 </div>
-                            </body>`
+                                <h3 style="margin: 10px 0;"><strong>Dear ${membershipData.member.firstName} ${membershipData.member.lastName},</strong></h3>
+                                <p style="margin: 10px 0;">We hope this message finds you well. We would like to bring to your attention that, upon review, your membership at ERDA is slated for reversion based on certain criteria.</p>
+                                <p style="margin: 10px 0;"><strong>Reason for Revert:</strong> ${message}</p>
+                                <p style="margin: 10px 0;">We encourage you to review your application thoroughly and address the mentioned points to increase the likelihood of a successful approval.</p>
+                                <p style="margin: 10px 0;">If you have any questions or require further clarification, please do not hesitate to reach out to our member services team at <a href="mailto:sem7idp@gmail.com">sem7idp@gmail.com</a>. We are here to assist you throughout the process.</p>
+                                <p style="margin: 10px 0;">Thank you for your dedication to becoming a member of [Organization Name], and we look forward to receiving your updated application.</p>
+                                <p style="margin: 10px 0;">Best regards,<br>Team ERDA</p>
+                            </div>
+                        </body>`
+            
                 // `Dear ${membershipData.member.firstName + " " + membershipData.member.lastName},
                 // We hope this message finds you well. We would like to bring to your attention that, upon review, your membership at ERDA is slated for reversion based on certain criteria.
                 // Reason for revert: ${message}
