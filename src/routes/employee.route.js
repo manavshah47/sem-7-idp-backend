@@ -10,4 +10,6 @@ const { employeeController } = require("../controller");
 
 router.put("/approve-membership", ensureApprover, employeeController.approveMembership)
 
+router.get("/dashboard", ensureApprover, employeeController.employeeDashboard)
+
 module.exports = router

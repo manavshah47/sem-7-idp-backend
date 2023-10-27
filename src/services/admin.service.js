@@ -1,5 +1,5 @@
 // user model import
-const { User, Employee, Membership } = require("../models")
+const { User, Employee, Membership, Lab } = require("../models")
 const Joi = require("joi")
 const { employeeValidation } = require("../validation")
 
@@ -101,8 +101,6 @@ const deleteUser = async (params) => {
         // fetch user id from param
         const { phone } = params;
 
-        console.log("PHONE: ", phone)
-
         // joi input validation
         const { error } = employeeValidation.phoneValidationSchema.validate({phone})
         
@@ -169,11 +167,46 @@ const updateUser = async (body) => {
     }
 }
 
+const adminDashboardData = async () => {
+    try {
+        const pendingMembershipsCount = await Membership.countDocuments({membershipStatus: "pending"})
+        const approvedMembershipsCount = await Membership.countDocuments({membershipStatus: "approved"})
+        const totalMembershipsCount = await Membership.countDocuments({membershipStatus: {$in: ["approved", "rejected", "pending"]}})
+        const employeeCount = await Employee.countDocuments()
+        
+        const associateMembershipsCount = await Membership.countDocuments({typeOfMembership: "Associate"})
+        const ordinaryMembershipsCount = await Membership.countDocuments({typeOfMembership: "Ordinary"})
+        const typeOfMembershipData = [associateMembershipsCount, ordinaryMembershipsCount]
+
+        const d1 = await Lab.countDocuments({name: "power electronic"})
+        const d2 = await Lab.countDocuments({name: "advance materials"})
+        const d3 = await Lab.countDocuments({name: "cable"})
+        const d4 = await Lab.countDocuments({name: "high voltage"})
+        const d5 = await Lab.countDocuments({name: "magnetic material"})
+        const d6 = await Lab.countDocuments({name: "calibration"})
+
+        const labData = [d1, d2, d3, d4, d5, d6]
+
+        const e1 = await Membership.countDocuments({ companyType: "private" })
+        const e2 = await Membership.countDocuments({ companyType: "public" })
+        const e3 = await Membership.countDocuments({ companyType: "cooperative" })
+        const e4 = await Membership.countDocuments({ companyType: "others" })
+
+        const companyTypeData = [e1, e2, e3, e4]
+
+        return { success: true, data: { pendingMembershipsCount, approvedMembershipsCount, totalMembershipsCount, employeeCount, typeOfMembershipData, labData, companyTypeData } }
+
+    } catch (error) {
+        return {sucess:false,message:"Internal server error", data: error}
+    }
+}
+
 module.exports = {
     logIn,
     showAdminInfo,
     createUser,
     showUsers,
     deleteUser,
-    updateUser
+    updateUser,
+    adminDashboardData
 }

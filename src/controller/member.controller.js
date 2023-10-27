@@ -19,8 +19,14 @@ const sendEmail = async (req, res) => {
     res.json(emailSentResponse)
 }
 
+const memberDashboard = async (req, res) => {
+    const memberDashboardResponse = await memberService.memberDashboard(req.user)
+    res.json(memberDashboardResponse)
+}
+
 module.exports = {
     errorPage,
     createMember,
-    sendEmail
+    sendEmail,
+    memberDashboard
 }

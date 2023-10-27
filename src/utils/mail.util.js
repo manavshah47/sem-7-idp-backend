@@ -10,22 +10,33 @@ const transporter = nodemailer.createTransport({
     port: 587,
     secure: false,
     auth: {
-        user: "manavshah0407@gmail.com",
+        user: "sem7idp@gmail.com",
         pass: APP_PASSWORD,
     }
 });
 
 
-const sendMail = async (to, subject, body) => {
+const sendMail = async (to, subject, body, pdf) => {
     try {
         // nodemailer package is used here to send data via mail
-        const mail = {
-            from: "manavshah0407@gmail.com",
+        let mail = {
+            from: "sem7idp@gmail.com",
             to, // receiver email
             subject,
             // html as main data of the mail
             html: body
         }
+
+        if(pdf) {
+            mail.attachments = [
+                {
+                    filename: 'magazine.pdf',
+                    href: pdf,
+                    contentType: 'application/pdf'
+                }
+            ]
+        }
+
         transporter.sendMail(mail, (error) => {
             if (error) {
                 return {response:false,message:"Cannot send email try again later"}

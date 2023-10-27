@@ -10,7 +10,6 @@ const { AvailableChatEvents, ChatEventEnum } = require("../constants")
  */
 const mountJoinChatEvent = (socket) => {
   socket.on(ChatEventEnum.JOIN_CHAT_EVENT, (chatId) => {
-    console.log(`User joined the chat 🤝. chatId: `, chatId);
     // joining the room with the chatId will allow specific events to be fired where we don't bother about the users like typing events
     // E.g. When user types we don't want to emit that event to specific participant.
     // We want to just emit that to the chat where the typing is happening
@@ -24,7 +23,6 @@ const mountJoinChatEvent = (socket) => {
  */
 const mountParticipantTypingEvent = (socket) => {
   socket.on(ChatEventEnum.TYPING_EVENT, (chatId) => {
-    console.log("participant started typing")
     socket.in(chatId).emit(ChatEventEnum.TYPING_EVENT, chatId);
   });
 };
@@ -35,7 +33,6 @@ const mountParticipantTypingEvent = (socket) => {
  */
 const mountParticipantStoppedTypingEvent = (socket) => {
   socket.on(ChatEventEnum.STOP_TYPING_EVENT, (chatId) => {
-    console.log("participant stopped typing")
     socket.in(chatId).emit(ChatEventEnum.STOP_TYPING_EVENT, chatId);
   });
 };
@@ -47,8 +44,6 @@ const mountParticipantStoppedTypingEvent = (socket) => {
 const initializeSocketIO = (io) => {
   return io.on("connection", async (socket) => {
     try {
-      console.log("user: ", socket.handshake.auth.user)
-
       const user = await Member.findOne({phone:socket.handshake.auth.user.phone, isApproved: true});
 
       // retrieve the user
@@ -64,17 +59,12 @@ const initializeSocketIO = (io) => {
       socket.join(user._id.toString());
       socket.emit(ChatEventEnum.CONNECTED_EVENT); // emit the connected event so that client is aware
 
-      console.log("event: ", ChatEventEnum.CONNECTED_EVENT)
-
-      console.log("User connected 🗼. userId: ", user._id.toString());
-
       // Common events that needs to be mounted on the initialization
       mountJoinChatEvent(socket);
       mountParticipantTypingEvent(socket);
       mountParticipantStoppedTypingEvent(socket);
 
       socket.on(ChatEventEnum.DISCONNECT_EVENT, () => {
-        console.log("user has disconnected 🚫. userId: " + socket.user?._id);
         if (socket.user?._id) {
           socket.leave(socket.user._id);
         }
@@ -97,7 +87,6 @@ const initializeSocketIO = (io) => {
  * @description Utility function responsible to abstract the logic of socket emission via the io instance
  */
 const emitSocketEvent = (req, roomId, event, payload) => {
-  console.log("Payload: ", payload)
   req.app.get("io").in(roomId).emit(event, payload);
 };
 

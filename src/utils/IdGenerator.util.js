@@ -1,8 +1,8 @@
 const { Counter } = require("../models");
 
-async function generateID(type) {
+async function generateID(typeOfId) {
     // find previous count from database
-    const sequentialIdCounter = await Counter.findOneAndUpdate({type}, {$inc: {counter:1}}, {returnOriginal:false})
+    const sequentialIdCounter = await Counter.findOneAndUpdate({type:typeOfId}, {$inc: {counter:1}}, {returnOriginal:false})
     let previousCount = sequentialIdCounter.counter
     
     // get current year
@@ -11,12 +11,12 @@ async function generateID(type) {
     const formattedCounter = String(previousCount).padStart(4, '0');
     
     let membershipId;
-    if(type == "member") {
+    if(typeOfId == "member") {
         // generate final membership Id
         membershipId = `ERDA${currentYear}${formattedCounter}`;
-    } else if(type == "associative") {
+    } else if(typeOfId == "associative") {
         membershipId = `ASS${currentYear}${formattedCounter}`
-    } else if(type == "ordinary"){
+    } else if(typeOfId == "ordinary"){
         membershipId = `ORD${currentYear}${formattedCounter}`
     }
 

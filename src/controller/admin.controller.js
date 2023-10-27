@@ -37,11 +37,17 @@ const updateUser = async (req, res) => {
     res.json(updatedUserInfo)
 }
 
+const adminDashboardData = async (req, res) => {
+    const dashboardDataResponse = await adminService.adminDashboardData()
+    res.json(dashboardDataResponse)
+}
+
 module.exports = {
     logIn,
     showAdminInfo,
     createUser,
     showUsers,
     deleteUser,
-    updateUser
+    updateUser,
+    adminDashboardData
 }

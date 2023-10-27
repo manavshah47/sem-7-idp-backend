@@ -1,6 +1,7 @@
 const { Magazine } = require("../models")
 const { employeeValidation } = require("../validation")
 const { uploadPDFFile, getPDFSignedURL } = require("./image.service")
+const { mailUtil } = require("../utils");
 
 // bluebird promise - used for asynchronous promise handling while uploading multiple files in s3 at same time
 const Promise = require('bluebird')
@@ -16,8 +17,6 @@ const uploadMagazine = async (body, user, file) => {
         }
 
         const { magazineName, magazineDescription, magazineAuthor, magazinePrice, magazinePages, magazineStock, magazineDate } = body;
-
-        console.log("page: ", magazinePages)
 
         // upload magazine on s3
         const uploadedMagazineURL = await uploadPDFFile(file, "magazine")
@@ -57,8 +56,32 @@ const getMagazines = async () => {
             magazines[index].file = pdfURL
         })
 
-
         return {success: true, data: magazines}
+
+    } catch (error) {
+        return {success:false, message:"Internal server error", data:error.message}
+    }
+}
+
+const sendMagazineViaMail = async (body, user) => {
+    try {
+        const { name, file, author } = body.magazine
+        
+        let subject = `Digital copy of Magazine: ${name}`
+        let mailBody = `<body>
+                    <div class="container" style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                        <div class="header" style="background-color: #0f3c69; color: #ffffff; text-align: center; padding: 10px 0; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+                            <h1>Magazine: ${name} By ${author}</h1>
+                        </div>
+                        <p style="margin: 10px 0;">Your engagement with Magasine ${name} by author ${author} is truly appreciated, and we hope you find this digital issue as enriching as its print counterpart.</p>
+                        <p style="margin: 10px 0;">Thank you for your trust in us.</p>
+                        <p style="margin: 10px 0;">Best regards,<br>Team ERDA</p>
+                    </div>
+                </body>`
+
+        await mailUtil.sendMail(user.email, subject, mailBody, file)
+
+        return {success:true, message:`Magazine mailed sucessfully`}
 
     } catch (error) {
         return {success:false, message:"Internal server error", data:error.message}
@@ -67,5 +90,6 @@ const getMagazines = async () => {
 
 module.exports = {
     uploadMagazine,
-    getMagazines
+    getMagazines,
+    sendMagazineViaMail
 }

@@ -13,4 +13,7 @@ router.post("/create-member", memberController.createMember)
 // send email route
 router.post("/send-email", memberController.sendEmail)
 
+// member dashboard 
+router.get("/dashboard", memberController.memberDashboard)
+
 module.exports = router

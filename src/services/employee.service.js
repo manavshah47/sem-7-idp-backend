@@ -33,12 +33,9 @@ const approveMembership = async (body, user) => {
         let membershipId;
         if(membershipStatus == "approved") {
             membershipId = await idGenerator.generateID(membershipData.typeOfMembership.toLowerCase())
-            console.log("id: ", membershipId)
             membershipData.membershipId = membershipId
             await membershipData.save()
         }
-
-        console.log("membershipID: ", membershipId)
 
         // approve membership if it is in pending or reverted status
         if(membershipData.membershipStatus == "pending" || membershipData.membershipStatus == "reverted"){
@@ -150,9 +147,20 @@ const approveMembership = async (body, user) => {
     }
 }
 
+const employeeDashboard = async (user) => {
+    try {
+        const employee = await Employee.findOne({'phone':user.phone})
 
+        const membership = await Membership.find({'approver.phone':user.phone}).select({ 'companyName':1, membershipStatus: 1 })
+
+        return { sucess: true, data: {employee, membership} }
+    } catch (error) {
+        return {success:false, message:"Internal server error", data:error.message}
+    }
+}
 
 
 module.exports = {
-    approveMembership
+    approveMembership,
+    employeeDashboard
 }

@@ -106,9 +106,7 @@ const uploadImageFile = async (files, folder) => {
         })
     .jpeg({quality:80})
     .toBuffer();
-
-    console.log("FILE 2: ", fileContent2)
-
+    
     // all campaign images will be stored inside campaign folder in s3
     let finalFileKey = `${folder}/${fileName}`;
 

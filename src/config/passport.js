@@ -27,6 +27,7 @@ module.exports = function (passport) {
                     // If admin present in our database.
                     done(null, user)
                 } else {
+                    //              CREATE NEW ADMIN                    
                     // const adminData = {
                     //     adminId: profile.id,
                     //     emailId: profile._json.email,
@@ -36,11 +37,10 @@ module.exports = function (passport) {
                     // }
 
                     // let admin = await Admin.create(adminData)
-                    // console.log(admin)
                     done(null, false)
                 }
             } catch (err) {
-                console.log(err)
+                
             }
         })
     )

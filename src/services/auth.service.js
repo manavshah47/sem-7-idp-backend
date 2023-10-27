@@ -43,7 +43,7 @@ const sendOtp = async (body) => {
         // send sms message via twilio
         const response = await client.messages
         .create({
-            body: `\nHi ${memberData ? (memberData.firstName + " " +  + memberData.lastName) : employeeData?.name},
+            body: `\nHi ${memberData ? (memberData.firstName + " " + memberData.lastName) : employeeData?.name},
             \nWe're implementing two-step verification for your ERDA'S MEMBERSHIP account sign in.
             \nYour verification code is ${otp}.
             \nPlease use this code within 10 minutes to complete the process. 

@@ -33,4 +33,7 @@ router.delete("/delete-user/:phone", ensureAdmin, adminController.deleteUser)
 // 8. update user route
 router.put("/update-user", ensureAdmin, adminController.updateUser)
 
+// 9. admin dashboard data
+router.get("/dashboard", ensureAdmin, adminController.adminDashboardData)
+
 module.exports = router;

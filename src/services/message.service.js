@@ -93,8 +93,6 @@ const sendMessage = async (params, body, user, files, req) => {
     const { chatId } = params;
     const { content } = body;
 
-    console.log("FILES: ", files)
-
     if (!content && !files) {
         return { success: false, message: "Message content is required" }
     }

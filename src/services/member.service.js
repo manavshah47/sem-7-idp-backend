@@ -1,4 +1,4 @@
-const { Email } = require("../models");
+const { Email, Lab, Membership } = require("../models");
 const { mailUtil, idGenerator } = require("../utils");
 
 const { Member } = require("../models/member.model")
@@ -55,7 +55,6 @@ const sendEmail = async (body) => {
         return { sucess: false, message: "Error while sending mail"}
 
     } catch (error) {
-        console.log("ERROR: ", error)
         return {sucess:false,message:"Internal server error", data: error.message}
     }
 }
@@ -118,10 +117,20 @@ const createMember = async (body) => {
     }
 }
 
+const memberDashboard = async (user) => {
+    try {
+        const membership = await Membership.findOne({'member.phone': user.phone}).select({membershipId: 1, membershipStatus: 1})
+        const bookings = await Lab.countDocuments({ memberPhone: user.phone })
+        return { success: true, message:"Member dashboard response", data: { membership, bookings } }
+    } catch (error) {
+        return {sucess:false,message: error.message}
+    }
+}
 
 module.exports = {
     errorPage,
     createMember,
-    sendEmail
+    sendEmail,
+    memberDashboard
 }
 

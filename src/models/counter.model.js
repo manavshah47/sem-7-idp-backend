@@ -4,6 +4,10 @@ const mongoose = require("mongoose");
 const counterSchema = new mongoose.Schema({
     counter: {
         type: Number
+    },
+
+    type: {
+        type: String
     }
 });
 

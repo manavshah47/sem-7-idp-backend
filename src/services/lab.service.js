@@ -26,7 +26,6 @@ const bookLab = async (body, user) => {
         return { success: true, message: "Lab booked successfully." }
 
     } catch (error) {
-        console.log("ERR: ", error)
         return { sucess: false, message:"Internal server error" }
     }
 }
@@ -74,7 +73,6 @@ const checkDateWiseAvailibility = async (body) => {
         return { success: true, dates:bookedDates }
 
     } catch (error) {
-        console.log("err: ", error)
         return { sucess: false, message:"Internal server error" }
     }
 }
@@ -111,8 +109,15 @@ const memberYearlyData = async (user) => {
             },
             {
                 $group: {
-                _id: "$date",
-                count: { $sum: 1 }
+                    _id: "$date",
+                    count: { $sum: 1 },
+                    name: { $push: "$name" },
+                    time: { $push: "$time" }
+                }
+            }, 
+            {
+                $sort: {
+                    time: 1
                 }
             }
         ])
@@ -122,6 +127,8 @@ const memberYearlyData = async (user) => {
             if(obj) {
                 obj.count = booking.count
                 obj.level = booking.count
+                obj.name = booking.name
+                obj.time = booking.time
             }
         })
 

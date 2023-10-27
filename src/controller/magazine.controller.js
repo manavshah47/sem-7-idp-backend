@@ -11,7 +11,13 @@ const getMagazines = async (req, res) => {
     res.json(magazinesResponse)
 }
 
+const sendMagazineViaMail = async (req, res) => {
+    const magazineSentResponse = await magazineService.sendMagazineViaMail(req.body, req.user)
+    res.json(magazineSentResponse) 
+}
+
 module.exports = {
     uploadMagazine,
-    getMagazines
+    getMagazines,
+    sendMagazineViaMail
 }

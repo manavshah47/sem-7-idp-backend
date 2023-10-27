@@ -12,7 +12,13 @@ const uploadMagazine = async (req, res) => {
     res.json(uploadedMagazineResponse) 
 }
 
+const employeeDashboard = async (req, res) => {
+    const employeeResponse = await employeeService.employeeDashboard(req.user)
+    res.json(employeeResponse)
+}
+
 module.exports = {
     approveMembership,
-    uploadMagazine
+    uploadMagazine,
+    employeeDashboard
 }

@@ -12,4 +12,6 @@ router.post("/upload-magazine", ensureMagazineManager, magazineController.upload
 
 router.get("/get-magazines", ensureAuthenticated, magazineController.getMagazines)
 
+router.post("/send-magazine", ensureAuthenticated, magazineController.sendMagazineViaMail)
+
 module.exports = router
