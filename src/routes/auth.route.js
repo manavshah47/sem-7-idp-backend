@@ -10,7 +10,7 @@ const { ensureMember } = require("../middleware/user.middleware")
 const { authController, membershipController } = require("../controller");
 
 // 1. user login route
-router.post("/login", passport.authenticate('member', {failureRedirect: 'http://localhost:3001/api/member/error' }), authController.login)
+router.post("/login", passport.authenticate('member', {failureRedirect: 'https://erda-membership-management.netlify.com/api/member/error' }), authController.login)
 
 // 3. user logout route
 router.get("/logout", logoutUser, authController.logout)
