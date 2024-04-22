@@ -24,7 +24,7 @@ const createUserValidationSchema = Joi.object({
 
 // validation schema for login user api
 const logInValidationSchema = Joi.object({
-    id: phone,
+    id: email,
     password: otp
 });
 

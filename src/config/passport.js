@@ -2,7 +2,7 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy
 const LocalStrategy = require('passport-local').Strategy
 // Admin model import
-const { Admin, Otp, Employee } = require('../models')
+const { Admin, Otp, Employee, Email } = require('../models')
 const { Member } = require("../models/member.model")
 
 const { userValidation } = require("../validation")
@@ -66,17 +66,17 @@ module.exports = function (passport) {
             //     return done(null, false)
             // }
 
-            const otpResponse = await Otp.findOne({phone:id, otp: password})
-
+            // const otpResponse = await Otp.findOne({phone:id, otp: password})
+            const otpResponse = await Email.findOne({ email: id, otp: password })
+            
             // if user not exists then show error message
             if(!otpResponse){
                 return done(null, false)
             }
 
-            let userData = await Member.findOne({phone:id})
-
+            let userData = await Member.findOne({email:id})
             if(userData == null) {
-                userData = await Employee.findOne({phone:id})
+                userData = await Employee.findOne({email:id})
             }
 
             if(userData != null){
@@ -98,13 +98,13 @@ module.exports = function (passport) {
     // called whenever new request occours for current session user
     passport.deserializeUser(async (user, done) => {
         // find current user from user database
-        let currUser = await Member.findOne({phone:user.phone}).select({password:0, __v:0})
+        let currUser = await Member.findOne({email:user.email}).select({password:0, __v:0})
         if(currUser){
             done(null, currUser)
             return;
         }
         
-        currUser = await Employee.findOne({phone:user.phone}).select({password:0, __v:0})
+        currUser = await Employee.findOne({email:user.email}).select({password:0, __v:0})
         if(currUser){
             done(null, currUser)
             return;
